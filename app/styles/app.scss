@@ -1,0 +1,11 @@
+@import "base/variables";
+
+//load foundation
+@import "base/foundation-settings";
+@import "foundation";
+@include foundation-everything;
+
+//include components
+@import 'components/body';
+@import 'components/nav';
+@import 'components/project';

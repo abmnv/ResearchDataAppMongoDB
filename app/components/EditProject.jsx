@@ -25,19 +25,26 @@ var EditProject = React.createClass({
     }
   },
 
-  handleSubmit (e) {
+  handleSave (e) {
     e.preventDefault();
 
     var {title, description} = this.state;
-    var fileList = this.refs.fileUploader.files;
+    var fileList = $.extend(true, [], this.refs.fileUploader.files);
 
     if(title && description){
-      console.log('title:', title);
+      this.refs.fileUploader.value='';
+      //console.log('title:', title);
       var {id, dispatch} = this.props;
       dispatch(actions.startUpdateProject(id, title, description, fileList)).then(() => {
-        this.props.history.push('/');
+        //this.props.history.push('/');
       });
     }
+  },
+
+  handleCancel (e) {
+    e.preventDefault();
+
+    this.props.history.push('/edit_projects');
   },
 
   handleInputChange (e) {
@@ -56,37 +63,38 @@ var EditProject = React.createClass({
 
     return (
       <div className="edit-project">
-        <form onSubmit={this.handleSubmit}>
-          <div className="row">
-            <label htmlhtmlFor="title" className="column small-3">Title:</label>
-            <div className="column small-9">
-              <input type="text" name="title" onChange={this.handleInputChange} value={this.state.title}></input>
-            </div>
+        <div className="row">
+          <label htmlhtmlFor="title" className="column small-3">Title:</label>
+          <div className="column small-9">
+            <input type="text" name="title" onChange={this.handleInputChange} value={this.state.title}></input>
           </div>
-          <div className="row">
-            <label htmlFor="description" className="column small-3">Description:</label>
-            <div className="column small-9">
-              <textarea rows="3" name="description" onChange={this.handleInputChange} value={this.state.description}></textarea>
-            </div>
+        </div>
+        <div className="row">
+          <label htmlFor="description" className="column small-3">Description:</label>
+          <div className="column small-9">
+            <textarea rows="3" name="description" onChange={this.handleInputChange} value={this.state.description}></textarea>
           </div>
-          <div className="row">
-            <label htmlFor="files" className="column small-3">Files:</label>
-            <div className="column small-9">
-              <FileList files={files}/>
-            </div>
+        </div>
+        <div className="row">
+          <label htmlFor="files" className="column small-3">Files:</label>
+          <div className="column small-9">
+            <FileList files={files}/>
           </div>
-          <div className="row">
-            <label htmlFor="fileUploader" className="column small-3">Attach Files:</label>
-            <div className="column small-9">
-              <input type="file" ref="fileUploader" multiple="multiple"></input>
-            </div>
+        </div>
+        <div className="row">
+          <label htmlFor="fileUploader" className="column small-3">Attach Files:</label>
+          <div className="column small-9">
+            <input type="file" name="fileUploader" ref="fileUploader" multiple="multiple"></input>
           </div>
-          <div className="row create-button">
-            <div className="column small-6 small-centered">
-              <button className="button expanded">Save</button>
-            </div>
+        </div>
+        <div className="row control-bar">
+          <div className="column small-5">
+            <button className="button alert expanded" onClick={this.handleCancel}>Cancel</button>
           </div>
-        </form>
+          <div className="column small-5 small-offset-2 small-5">
+            <button className="button expanded" onClick={this.handleSave}>Save</button>
+          </div>
+        </div>
       </div>
     )
   }

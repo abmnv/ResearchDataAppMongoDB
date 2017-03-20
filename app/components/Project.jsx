@@ -15,8 +15,8 @@ export var Project = React.createClass({
   },
 
   handleDeleteProject () {
-    var {dispatch, id} = this.props;
-    dispatch(actions.startDeleteProject(id));
+    var {dispatch, id, files} = this.props;
+    dispatch(actions.startDeleteProject(id, files));
   },
 
   handleEditProject () {
@@ -25,7 +25,7 @@ export var Project = React.createClass({
   },
 
   render () {
-    var {title, createdAt, id, fileName, description, fileUrl, editModeStatus} = this.props;
+    var {title, createdAt, id, description, fileUrl, editModeStatus} = this.props;
 
     var renderControlBar = () => {
       if(editModeStatus){

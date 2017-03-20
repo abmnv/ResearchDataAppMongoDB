@@ -81,12 +81,17 @@
   textarea {
     color: $project-text-color;
   }
+
+  .control-bar {
+    margin-top: 1rem;
+
+    button {
+      padding-top: 0.7rem;
+      padding-bottom: 0.7rem;
+    }
+  }
 }
 
 .edit-project {
   @extend .create-project;
-}
-
-.create-button {
-  margin-top: 1rem;
 }

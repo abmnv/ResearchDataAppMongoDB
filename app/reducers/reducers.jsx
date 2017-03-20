@@ -15,7 +15,11 @@ export var projectReducer = (state = [], action) => {
     case 'UPDATE_PROJECT':
       return state.map((project) => {
         if(project.id === action.project.id){
-          return {...project, ...action.project}
+          var files = [
+            ...project.files,
+            ...action.project.files
+          ]
+          return {...project, ...action.project, files}
         }else{
           return project
         }
@@ -24,6 +28,20 @@ export var projectReducer = (state = [], action) => {
       return state.filter((project) => {
         return project.id === action.id ? false : true;
       });
+    case 'DELETE_FILE':
+      return state.map((project) => {
+        if(project.id === action.projectId){
+          var files = project.files.filter((file) => {
+            return !(file.id === action.fileId);
+          });
+          return {
+            ...project,
+            files
+          }
+        }else{
+          return project;
+        }
+      })
     default:
       return state
   }

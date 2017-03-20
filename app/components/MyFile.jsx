@@ -6,9 +6,9 @@ import * as actions from 'actions';
 var MyFile = React.createClass({
 
   handleDeleteFile () {
-    var {id, activeProjectId} = this.props;
+    var {id, name, activeProjectId, dispatch} = this.props;
     console.log('activeProjectId:', activeProjectId);
-    //dispatch(actions.startDeleteFile(id));
+    dispatch(actions.startDeleteFile(activeProjectId, id, name));
   },
 
   render () {

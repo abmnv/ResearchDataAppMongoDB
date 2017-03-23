@@ -6,21 +6,34 @@ import Project from 'Project';
 var ProjectList = React.createClass({
 
   render () {
-    var {projects, editModeStatus} = this.props;
+    var {projects, editModeStatus, isLoading, searchText} = this.props;
     //console.log('Projects:', projects);
 
     var renderList = () => {
 
-      if(projects.length === 0){
+      if(isLoading){
         return (
-          <p>Nothing to show</p>
+          <h4>Loading...</h4>
         )
+      }else if(projects.length === 0){
+        return (
+          <h4>Nothing to show</h4>
+        );
       }
 
-      return projects.map((project) => {
+      var updatedProjects = JSON.parse(JSON.stringify(projects));
+
+      if(searchText !== ''){
+        var updatedProjects = updatedProjects.filter((project) => {
+          var title = project.title.toLowerCase();
+          return title.indexOf(searchText) > -1;
+        });
+      }
+
+      return updatedProjects.map((project) => {
         return (
           <Project key={project.id} {...project} editModeStatus={editModeStatus}/>
-        )
+        );
       });
     }
 

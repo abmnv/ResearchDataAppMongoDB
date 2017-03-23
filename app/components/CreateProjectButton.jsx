@@ -5,10 +5,12 @@ var CreateProjectButton = React.createClass({
 
   render () {
     return (
-      <div className="row">
-        <Link to="/create_project" className="button expanded">Create New Project</Link>
+      <div className="create-project-button">
+        <div className="row">
+          <Link to="/create_project" className="button expanded">Create New Project</Link>
+        </div>
       </div>
-    )
+    );
   }
 });
 

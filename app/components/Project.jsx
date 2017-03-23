@@ -26,6 +26,7 @@ export var Project = React.createClass({
 
   render () {
     var {title, createdAt, id, description, fileUrl, editModeStatus} = this.props;
+    var briefDescription = description.length < 120 ? description : description.slice(0, 120) + '...';
 
     var renderControlBar = () => {
       if(editModeStatus){
@@ -36,16 +37,18 @@ export var Project = React.createClass({
     }
 
     return (
-      <div className="project">
-        <div className="row">
-          <Link to="/detailed_project" onClick={this.handleSetActiveProject} className="button expanded hollow">
-            <h4>{title}</h4>
-            <p className="date-created">Created on {moment.unix(createdAt).format('MMM Do, YYYY')}</p>
-            <p className="brief-description">{description}</p>
-          </Link>
+      <div>
+        <div className="project">
+          <div className="row">
+            <Link to="/detailed_project" onClick={this.handleSetActiveProject} className="button expanded hollow">
+              <h4>{title}</h4>
+              <p className="date-created">Created on {moment.unix(createdAt).format('MMM Do, YYYY @ h:mm a')}</p>
+              <p className="brief-description">{briefDescription}</p>
+            </Link>
+          </div>
         </div>
         {renderControlBar()}
-      </div>
+      </div>  
     );
   }
 });

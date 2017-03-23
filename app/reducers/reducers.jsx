@@ -57,10 +57,28 @@ export var activeProjectReducer = (state = '', action) => {
 }
 
 export var editModeStatusReducer = (state = false, action) => {
-  switch(action.type){
+  switch(action.type) {
     case 'CHANGE_EDIT_MODE_STATUS':
       return action.status;
     default:
-      return state
+      return state;
+  }
+}
+
+export var setLoadingStatusReducer = (state = false, action) => {
+  switch(action.type) {
+    case 'SET_LOADING_STATUS':
+      return action.status;
+    default:
+      return state;
+  }
+}
+
+export var setSearchText = (state = '', action) => {
+  switch(action.type) {
+    case 'SET_SEARCH_TEXT':
+      return action.text;
+    default:
+      return state;
   }
 }

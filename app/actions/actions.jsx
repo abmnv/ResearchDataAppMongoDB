@@ -1,6 +1,20 @@
 import firebase, {firebaseRef, firebaseStorageRef} from 'app/firebase/';
 import moment from 'moment';
 
+export var setLoadingStatus = (status) => {
+  return {
+    type: 'SET_LOADING_STATUS',
+    status
+  }
+}
+
+export var setSearchText = (text) => {
+  return {
+    type: 'SET_SEARCH_TEXT',
+    text
+  }
+}
+
 export var addProjects = (projects) => {
   return {
     type: 'ADD_PROJECTS',
@@ -40,7 +54,7 @@ export var startDeleteProject = (id, files) => {
     files.forEach((myFile) => {
       seq = seq.then(() => {
         console.log('file name:', myFile.name, 'File:', myFile);
-        return firebaseStorageRef.child(myFile.name).delete();
+        return firebaseStorageRef.child(id + '/' + myFile.name).delete();
       });
     });
 
@@ -56,10 +70,10 @@ export var startAddProjects = () => {
 
   return (dispatch, getState) => {
     //console.log('inside startAddProjects');
-
+    dispatch(setLoadingStatus(true));
     var projectsRef = firebaseRef.child('projects');
 
-    projectsRef.once('value').then((snapshot) => {
+    return projectsRef.once('value').then((snapshot) => {
       //console.log('shapshot:', snapshot.val());
 
       var firebaseProjects = snapshot.val() || {};
@@ -81,6 +95,7 @@ export var startAddProjects = () => {
       });
 
       dispatch(addProjects(projects));
+      dispatch(setLoadingStatus(false));
     });
   }
 }
@@ -109,7 +124,7 @@ export var deleteFile = (projectId, fileId) => {
 
 export var startDeleteFile = (projectId, fileId, fileName) => {
   return (dispatch, getState) => {
-    return firebaseStorageRef.child(fileName).delete().then(() => {
+    return firebaseStorageRef.child(projectId + '/' + fileName).delete().then(() => {
       return firebaseRef.child('projects/' + projectId + '/files/' + fileId).remove();
     }).then(() => {
       dispatch(deleteFile(projectId, fileId));
@@ -139,7 +154,7 @@ export var startUpdateProject = (id, title, description, fileList) => {
       fileList.forEach((myFile) => {
         seq = seq.then(() => {
           console.log('file name:', myFile.name, 'File:', myFile);
-          return firebaseStorageRef.child(myFile.name).put(myFile);
+          return firebaseStorageRef.child(id + '/' + myFile.name).put(myFile);
         }).then((snapshot) => {
           fileInfo = {name: myFile.name, url: snapshot.downloadURL};
           return projectRef.child('files').push(fileInfo);
@@ -181,7 +196,7 @@ export var startAddProject = (title, description, fileList) => {
       fileList.forEach((myFile) => {
         seq = seq.then(() => {
           console.log('file name:', myFile.name, 'File:', myFile);
-          return firebaseStorageRef.child(myFile.name).put(myFile);
+          return firebaseStorageRef.child(projectSnapshot.key + '/' + myFile.name).put(myFile);
         }).then((snapshot) => {
           fileInfo = {name: myFile.name, url: snapshot.downloadURL};
           return projectsRef.child(projectSnapshot.key + '/files').push(fileInfo);

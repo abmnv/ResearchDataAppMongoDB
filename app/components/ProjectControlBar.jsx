@@ -12,10 +12,14 @@ var ProjectControlBar = React.createClass({
 
   render () {
     return (
-      <div className="row">
-        <div className="project-control-bar">
-            <button className="column small-5 button alert" onClick={this.handleDelete}>Delete</button>
-            <button className="column small-5 small-offset-2 button" onClick={this.handleEdit}>Edit</button>
+      <div className="project-control-bar">
+        <div className="row">
+          <div className="column small-6">
+            <button className="button tiny alert expanded" onClick={this.handleDelete}>Delete</button>
+          </div>
+          <div className="column small-6">
+            <button className="button tiny expanded" onClick={this.handleEdit}>Edit</button>
+          </div>
         </div>
       </div>
     );

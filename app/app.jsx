@@ -10,6 +10,7 @@ import EditProjects from 'EditProjects';
 import EditProject from 'EditProject';
 import DetailedProject from 'DetailedProject';
 import CreateProject from 'CreateProject';
+import Login from 'Login';
 
 var store = require('configureStore').configure();
 var state = store.getState();
@@ -34,6 +35,7 @@ ReactDOM.render(
     <Router history={hashHistory}>
       <Route path="/" component={Main}>
         <IndexRoute component={Projects}/>
+        <Route path="/login" component={Login}/>
         <Route path="/create_project" component={CreateProject}/>
         <Route path="/edit_projects" component={EditProjects}/>
         <Route path="/detailed_project" component={DetailedProject}/>

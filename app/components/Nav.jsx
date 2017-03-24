@@ -28,10 +28,10 @@ var Nav = React.createClass({
               Neuroimaging Archive
             </li>
             <li>
-              <IndexLink activeClassName="active-link" activeStyle={{fontWeight:'bold'}} to="/">Projects</IndexLink>
+              <IndexLink activeClassName="active-link" to="/">Projects</IndexLink>
             </li>
             <li>
-              <Link activeClassName="active-link" activeStyle={{fontWeight:'bold'}} to="/edit_projects">Edit Projects</Link>
+              <Link activeClassName="active-link" to="/edit_projects">Edit Projects</Link>
             </li>
           </ul>
         </div>
@@ -43,6 +43,9 @@ var Nav = React.createClass({
               </li>
               <li>
                 <input type="submit" className="button" value="Search"/>
+              </li>
+              <li>
+                <Link activeClassName="active-link" to="/login">Login</Link>
               </li>
             </ul>
           </form>

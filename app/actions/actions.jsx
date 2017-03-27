@@ -1,4 +1,4 @@
-import firebase, {firebaseRef, firebaseStorageRef} from 'app/firebase/';
+import firebase, {firebaseRef, firebaseStorageRef, githubProvider} from 'app/firebase/';
 import moment from 'moment';
 
 export var setLoadingStatus = (status) => {
@@ -37,10 +37,45 @@ export var changeEditModeStatus = (status) => {
 }
 
 export var deleteProject = (id) => {
-
   return {
     type: 'DELETE_PROJECT',
     id
+  }
+}
+
+export var login = () => {
+  return {
+    type: 'SET_LOGIN_STATUS',
+    status: true
+  }
+}
+
+export var startLogin = () => {
+  return (dispatch, getState) => {
+    return firebase.auth().signInWithPopup(githubProvider).then((result) => {
+      console.log('Auth worked', result);
+      dispatch(login());
+    }).catch((e) => {
+      console.log('Unable to auth', e);
+    });
+  }
+}
+
+export var logout = () => {
+  return {
+    type: 'SET_LOGIN_STATUS',
+    status: false
+  }
+}
+
+export var startLogout = () => {
+  return (dispatch, getState) => {
+    return firebase.auth().signOut().then(() => {
+      dispatch(logout());
+      console.log('Successfully logged out');
+    }).catch((e) => {
+      console.log('Error while trying to log out', e);
+    });
   }
 }
 

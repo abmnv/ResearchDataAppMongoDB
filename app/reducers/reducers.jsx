@@ -43,7 +43,16 @@ export var projectReducer = (state = [], action) => {
         }
       })
     default:
-      return state
+      return state;
+  }
+}
+
+export var setLoginStatus = (state = false, action) => {
+  switch(action.type) {
+    case 'SET_LOGIN_STATUS':
+      return action.status;
+    default:
+      return state;
   }
 }
 
@@ -52,7 +61,7 @@ export var activeProjectReducer = (state = '', action) => {
     case 'SET_ACTIVE_PROJECT':
       return action.id;
     default:
-      return state
+      return state;
   }
 }
 

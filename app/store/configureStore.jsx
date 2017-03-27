@@ -10,7 +10,8 @@ export var configure = () => {
     activeProjectId: reducers.activeProjectReducer,
     //editModeStatus: reducers.editModeStatusReducer,
     isLoading: reducers.setLoadingStatusReducer,
-    searchText: reducers.setSearchText
+    searchText: reducers.setSearchText,
+    isLoggedIn: reducers.setLoginStatus,
   });
 
   var store = redux.createStore(reducer, redux.compose(

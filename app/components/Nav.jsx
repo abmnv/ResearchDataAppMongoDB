@@ -19,7 +19,29 @@ var Nav = React.createClass({
     dispatch(actions.setSearchText(searchText));
   },
 
+  handleLogout (e) {
+    e.preventDefault();
+    
+    const {dispatch} = this.props;
+
+    dispatch(actions.startLogout());
+  },
+
   render: function(){
+    const {isLoggedIn} = this.props;
+
+    const renderLogin = () => {
+      if(isLoggedIn){
+        return (
+          <Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>
+        );
+      }else{
+        return (
+          <Link activeClassName="active-link" to="/login">Login</Link>
+        );
+      }
+    }
+
     return (
       <div className="top-bar">
         <div className="top-bar-left">
@@ -45,7 +67,7 @@ var Nav = React.createClass({
                 <input type="submit" className="button" value="Search"/>
               </li>
               <li>
-                <Link activeClassName="active-link" to="/login">Login</Link>
+                {renderLogin()}
               </li>
             </ul>
           </form>
@@ -55,5 +77,10 @@ var Nav = React.createClass({
   }
 });
 
-export default connect(null, null, null, {pure:false})(Nav);
+export default connect(({isLoggedIn}) => {
+  return {isLoggedIn};
+}, null, null, {pure:false})(Nav);
 //export default Nav;
+// <div onClick={this.handleLogout}>
+//   Logout
+// </div>

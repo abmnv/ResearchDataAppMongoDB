@@ -1,10 +1,11 @@
 {
   "name": "ResearchDataApp",
   "version": "1.0.0",
-  "description": "Researh Data App",
+  "description": "Research Data App",
   "main": "index.js",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "start": "node server.js"
   },
   "author": "Artem Mamonov",
   "license": "MIT",

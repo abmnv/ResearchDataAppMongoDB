@@ -6,8 +6,9 @@ import Project from 'Project';
 var ProjectList = React.createClass({
 
   render () {
-    var {projects, editModeStatus, isLoading, searchText} = this.props;
-    //console.log('Projects:', projects);
+    var {projects, isLoading, searchText, editModeStatus} = this.props;
+    console.log('ProjectList props:', this.props);
+    console.log('ProjectList editModeStatus:', editModeStatus);
 
     var renderList = () => {
 

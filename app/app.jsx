@@ -6,7 +6,7 @@ import {Provider} from 'react-redux';
 import * as actions from 'actions';
 import Main from 'Main';
 import Projects from 'Projects';
-import EditProjects from 'EditProjects';
+//import EditProjects from 'EditProjects';
 import EditProject from 'EditProject';
 import DetailedProject from 'DetailedProject';
 import CreateProject from 'CreateProject';
@@ -37,9 +37,9 @@ ReactDOM.render(
         <IndexRoute component={Projects}/>
         <Route path="/login" component={Login}/>
         <Route path="/create_project" component={CreateProject}/>
-        <Route path="/edit_projects" component={EditProjects}/>
-        <Route path="/detailed_project" component={DetailedProject}/>
-        <Route path="/edit_project" component={EditProject}/>
+        <Route path="/edit_projects" component={Projects}/>
+        <Route path="/projects/:projectId" component={DetailedProject}/>
+        <Route path="/edit_projects/:projectId" component={EditProject}/>
       </Route>
     </Router>
   </Provider>,

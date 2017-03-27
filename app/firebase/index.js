@@ -3,11 +3,11 @@ import firebase from 'firebase';
 try {
 
   var config = {
-      apiKey: "AIzaSyAT5a076p6NKBKgtyH79mGzNRJY5mQ-C3c",
-      authDomain: "research-data-app.firebaseapp.com",
-      databaseURL: "https://research-data-app.firebaseio.com",
-      storageBucket: "research-data-app.appspot.com",
-      messagingSenderId: "335357834988"
+      apiKey: process.env.API_KEY,
+      authDomain: process.env.AUTH_DOMAIN,
+      databaseURL: process.env.DATABASE_URL,
+      storageBucket: process.env.STORAGE_BUCKET,
+      messagingSenderId: process.env.MESSAGING_SENDER_ID
     };
 
   firebase.initializeApp(config);

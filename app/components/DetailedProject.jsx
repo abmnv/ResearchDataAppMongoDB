@@ -7,13 +7,26 @@ import * as actions from 'actions';
 
 var DetailedProject = React.createClass({
 
-  componentWillUnmount () {
-    var {dispatch} = this.props;
-    dispatch(actions.setActiveProject(''));
-  },
+  // componentWillUnmount () {
+  //   var {dispatch} = this.props;
+  //   dispatch(actions.setActiveProject(''));
+  // },
 
   render () {
-    var {title, createdAt, description, files} = this.props;
+    //var {title, createdAt, description, files, params} = this.props;
+    var {projects, params} = this.props;
+    var {projectId} = params;
+    //console.log('projectId:', projectId);
+
+    var currentProject;
+    projects.forEach((project) => {
+      if(project.id === projectId){
+        //console.log('project:', project);
+        currentProject = project;
+      }
+    });
+
+    var {title, createdAt, description, files} = currentProject;
 
     return (
       <div className="project">
@@ -34,15 +47,15 @@ var DetailedProject = React.createClass({
 });
 
 export default connect((state) => {
-  var newProject;
-  state.projects.forEach((project) => {
-    if(project.id === state.activeProjectId){
-      //console.log('project:', project);
-      newProject = project;
-    }
-  });
+  // var newProject;
+  // state.projects.forEach((project) => {
+  //   if(project.id === state.activeProjectId){
+  //     //console.log('project:', project);
+  //     newProject = project;
+  //   }
+  // });
   //console.log('newProject:', newProject);
-  return newProject;
+  return state;
 
 })(DetailedProject);
 

@@ -6,37 +6,50 @@ import * as actions from 'actions';
 
 var EditProject = React.createClass({
 
-  componentWillMount(){
-    var {dispatch} = this.props;
-    dispatch(actions.changeEditModeStatus(true));
-  },
-
-  componentWillUnmount(){
-    var {dispatch} = this.props;
-    dispatch(actions.changeEditModeStatus(false));
-    dispatch(actions.setActiveProject(''));
-  },
+  // componentWillMount(){
+  //   var {dispatch} = this.props;
+  //   dispatch(actions.changeEditModeStatus(true));
+  // },
+  //
+  // componentWillUnmount(){
+  //   var {dispatch} = this.props;
+  //   dispatch(actions.changeEditModeStatus(false));
+  //   //dispatch(actions.setActiveProject(''));
+  // },
 
   getInitialState () {
-    var {title, description} = this.props;
+    var {projects, params} = this.props;
+    var {projectId} = params;
+    //console.log('projectId:', projectId);
+
+    var currentProject;
+    projects.forEach((project) => {
+      if(project.id === projectId){
+        //console.log('project:', project);
+        currentProject = project;
+      }
+    });
+    //console.log('currentProject:', currentProject);
+
+    //var {title, description, createdAt, id, files} = currentProject;
+    //var {title, description} = this.props;
     return {
-      title,
-      description
+      ...currentProject
     }
   },
 
   handleSave (e) {
     e.preventDefault();
 
-    var {title, description} = this.state;
+    var {id, title, description} = this.state;
     var fileList = $.extend(true, [], this.refs.fileUploader.files);
 
     if(title && description){
       this.refs.fileUploader.value='';
       //console.log('title:', title);
-      var {id, dispatch} = this.props;
+      var {dispatch} = this.props;
       dispatch(actions.startUpdateProject(id, title, description, fileList)).then(() => {
-        //this.props.history.push('/');
+        this.props.history.push('/');
       });
     }
   },
@@ -59,7 +72,8 @@ var EditProject = React.createClass({
   },
 
   render () {
-    var {createdAt, id, files, fileUrl} = this.props;
+
+    var {title, description, createdAt, id, files} = this.state;
 
     return (
       <div className="edit-project">
@@ -101,14 +115,14 @@ var EditProject = React.createClass({
 });
 
 export default connect((state) => {
-  var newProject;
-  state.projects.forEach((project) => {
-    if(project.id === state.activeProjectId){
-      //console.log('project:', project);
-      newProject = project;
-    }
-  });
+  // var newProject;
+  // state.projects.forEach((project) => {
+  //   if(project.id === state.activeProjectId){
+  //     //console.log('project:', project);
+  //     newProject = project;
+  //   }
+  // });
   //console.log('newProject:', newProject);
-  return newProject;
+  return state;
 
 })(EditProject);

@@ -1,5 +1,14 @@
 var webpack = require('webpack');
 var path = require('path');
+var env = require('node-env-file');
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
+try {
+  env(path.join(__dirname, 'config.env'));
+} catch(e) {
+  console.log('Problem importing env file, ', e);
+}
 
 module.exports = {
   entry: [
@@ -14,6 +23,15 @@ module.exports = {
     new webpack.ProvidePlugin({
       '$': 'jquery',
       'jQuery': 'jquery'
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        API_KEY: JSON.stringify(process.env.API_KEY),
+        AUTH_DOMAIN: JSON.stringify(process.env.AUTH_DOMAIN),
+        DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
+        STORAGE_BUCKET: JSON.stringify(process.env.STORAGE_BUCKET),
+        MESSAGING_SENDER_ID: JSON.stringify(process.env.MESSAGING_SENDER_ID)
+      }
     })
   ],
   output: {
@@ -52,5 +70,6 @@ module.exports = {
         exclude: /(node_modules|bower_components)/
       }
     ]
-  }
+  },
+  devtool: process.env.NODE_ENV ? undefined : 'cheap-module-eval-source-map'
 }

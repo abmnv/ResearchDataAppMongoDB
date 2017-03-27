@@ -9,10 +9,10 @@ import ProjectControlBar from 'ProjectControlBar';
 
 export var Project = React.createClass({
 
-  handleSetActiveProject () {
-    var {id, dispatch} = this.props;
-    dispatch(actions.setActiveProject(id));
-  },
+  // handleSetActiveProject () {
+  //   var {id, dispatch} = this.props;
+  //   dispatch(actions.setActiveProject(id));
+  // },
 
   handleDeleteProject () {
     var {dispatch, id, files} = this.props;
@@ -20,13 +20,17 @@ export var Project = React.createClass({
   },
 
   handleEditProject () {
-    this.handleSetActiveProject();
-    hashHistory.push('/edit_project');
+    //this.handleSetActiveProject();
+    var {id} = this.props;
+    hashHistory.push('/edit_projects/' + id);
   },
 
   render () {
     var {title, createdAt, id, description, fileUrl, editModeStatus} = this.props;
     var briefDescription = description.length < 120 ? description : description.slice(0, 120) + '...';
+
+    //var editModeStatus=true;
+    console.log('Project editModeStatus:', editModeStatus);
 
     var renderControlBar = () => {
       if(editModeStatus){
@@ -40,7 +44,7 @@ export var Project = React.createClass({
       <div>
         <div className="project">
           <div className="row">
-            <Link to="/detailed_project" onClick={this.handleSetActiveProject} className="button expanded hollow">
+            <Link to={'/projects/'+id} className="button expanded hollow">
               <h4>{title}</h4>
               <p className="date-created">Created on {moment.unix(createdAt).format('MMM Do, YYYY @ h:mm a')}</p>
               <p className="brief-description">{briefDescription}</p>
@@ -48,12 +52,9 @@ export var Project = React.createClass({
           </div>
         </div>
         {renderControlBar()}
-      </div>  
+      </div>
     );
   }
 });
 
 export default connect()(Project);
-//<p>File url: {fileUrl}</p>
-//<p>File name: {fileName}</p>
-//<a href={fileUrl} className="button tiny success">Download</a>

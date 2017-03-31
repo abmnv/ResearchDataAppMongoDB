@@ -79,6 +79,13 @@ export var startLogout = () => {
   }
 }
 
+export const setRedirectUrl = (url) => {
+  return {
+    type: 'SET_REDIRECT_URL',
+    url
+  }
+}
+
 export var startDeleteProject = (id, files) => {
 
   return (dispatch, getState) => {
@@ -207,26 +214,41 @@ export var startUpdateProject = (id, title, description, fileList) => {
   }
 }
 
-export var startAddProject = (title, description, fileList) => {
+export var startAddProject = (title, description, logoImage, fileList) => {
   return (dispatch, getState) => {
 
-    var project = {
+    const project = {
       title,
       description,
       createdAt: moment().unix(),
+      logoImage: null,
       files: null
     }
 
-    var projectsRef = firebaseRef.child('projects');
+    const projectsRef = firebaseRef.child('projects');
     //var fileRef = firebaseStorageRef.child(project.fileName);
-    var myFiles = [];
-    var fileInfo = {};
+    let myFiles = [];
+    let fileInfo = {};
+    let logoImageInfo =  {
+      name: logoImage ? logoImage.name : 'default-image.png',
+      url: 'https://firebasestorage.googleapis.com/v0/b/research-data-app.appspot.com/o/icons%2Fdefault-project.png?alt=media&token=a16a1fa3-df80-4c28-becf-562ff9a61d13'
+    };
 
-    return projectsRef.push(project).then((projectSnapshot) => {
+    let projectSnapshot;
 
-      var seq = Promise.resolve();
+    return projectsRef.push(project).then((snapshot) => {
+      projectSnapshot = snapshot;
+      return (logoImage ? (firebaseStorageRef.child(projectSnapshot.key + '/' + logoImage.name).put(logoImage)) : undefined);
+    }).then((snapshot) => {
+      if(snapshot) {
+        logoImageInfo.url = snapshot.downloadURL;
+      }
+      return projectsRef.child(projectSnapshot.key + '/logoImage').update(logoImageInfo);
+    }).then((snapshot) => {
 
-      console.log('fileList inside startAddProject actions:', fileList);
+      let seq = Promise.resolve();
+
+      //console.log('fileList inside startAddProject actions:', fileList);
 
       fileList.forEach((myFile) => {
         seq = seq.then(() => {
@@ -241,17 +263,16 @@ export var startAddProject = (title, description, fileList) => {
         });
       });
 
-      return seq.then(() => {
-        console.log('myFiles:', myFiles);
-
-        dispatch(addProject(
-          {
-            ...project,
-            id: projectSnapshot.key,
-            files: myFiles
-          }
-        ));
-      });
+      return seq;
+    }).then(() => {
+      dispatch(addProject(
+        {
+          ...project,
+          id: projectSnapshot.key,
+          logoImage: logoImageInfo,
+          files: myFiles
+        }
+      ));
     });
 
     // return fileRef.put(fileList[0]).then((snapshot) => {

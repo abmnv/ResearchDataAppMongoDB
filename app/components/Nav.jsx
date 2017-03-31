@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, IndexLink} from 'react-router';
+import {Link, IndexLink, hashHistory} from 'react-router';
 import {connect} from 'react-redux';
 
 import * as actions from 'actions';
@@ -21,26 +21,17 @@ var Nav = React.createClass({
 
   handleLogout (e) {
     e.preventDefault();
-    
+
     const {dispatch} = this.props;
 
     dispatch(actions.startLogout());
+    hashHistory.push('/');
   },
 
   render: function(){
     const {isLoggedIn} = this.props;
 
-    const renderLogin = () => {
-      if(isLoggedIn){
-        return (
-          <Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>
-        );
-      }else{
-        return (
-          <Link activeClassName="active-link" to="/login">Login</Link>
-        );
-      }
-    }
+    const login = isLoggedIn ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<Link activeClassName="active-link" to="/login">Login</Link>);
 
     return (
       <div className="top-bar">
@@ -67,7 +58,7 @@ var Nav = React.createClass({
                 <input type="submit" className="button" value="Search"/>
               </li>
               <li>
-                {renderLogin()}
+                {login}
               </li>
             </ul>
           </form>

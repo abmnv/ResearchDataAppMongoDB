@@ -92,7 +92,7 @@ var EditProject = React.createClass({
         <div className="row">
           <label htmlFor="files" className="column small-3">Files:</label>
           <div className="column small-9">
-            <FileList files={files}/>
+            <FileList files={files} projectId={id} editModeStatus={true}/>
           </div>
         </div>
         <div className="row">

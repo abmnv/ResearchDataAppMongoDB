@@ -7,11 +7,9 @@ var ProjectList = React.createClass({
 
   render () {
     var {projects, isLoading, searchText, editModeStatus} = this.props;
-    console.log('ProjectList props:', this.props);
-    console.log('ProjectList editModeStatus:', editModeStatus);
+    //console.log('ProjectList editModeStatus:', editModeStatus);
 
     var renderList = () => {
-
       if(isLoading){
         return (
           <h4>Loading...</h4>
@@ -46,7 +44,10 @@ var ProjectList = React.createClass({
   }
 });
 
-export default connect((state) => {
-  //console.log('ProjectList state:', state);
-  return state;
+export default connect((state, ownProps) => {
+  //console.log('state:', state);
+  //console.log('ownProps:', ownProps);
+  return {
+    ...state,
+    ...ownProps}
 })(ProjectList);

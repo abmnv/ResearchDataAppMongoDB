@@ -6,26 +6,29 @@ import * as actions from 'actions';
 var MyFile = React.createClass({
 
   handleDeleteFile () {
-    var {id, name, activeProjectId, dispatch} = this.props;
-    console.log('activeProjectId:', activeProjectId);
-    dispatch(actions.startDeleteFile(activeProjectId, id, name));
+    var {id, name, projectId, dispatch} = this.props;
+    console.log('projectId:', projectId);
+    dispatch(actions.startDeleteFile(projectId, id, name));
   },
 
   render () {
-    var {id, name, url, activeProjectId, editModeStatus} = this.props;
+    var {id, name, url, projectId, editModeStatus} = this.props;
     //console.log('editModeStatus:', editModeStatus);
+    console.log('MyFile editModeStatus:', editModeStatus);
 
-    var renderFileLink = () => {
-      if(editModeStatus){
-        return (
-          <button className="button tiny alert" onClick={this.handleDeleteFile}>Delete</button>
-        )
-      }else{
-        return (
-          <a href={url} className="button tiny success">Download</a>
-        )
-      }
-    }
+    const button = editModeStatus ? (<button className="button tiny alert" onClick={this.handleDeleteFile}>Delete</button>) : (<a href={url} className="button tiny success">Download</a>);
+
+    // var renderFileLink = () => {
+    //   if(editModeStatus){
+    //     return (
+    //       <button className="button tiny alert" onClick={this.handleDeleteFile}>Delete</button>
+    //     )
+    //   }else{
+    //     return (
+    //       <a href={url} className="button tiny success">Download</a>
+    //     )
+    //   }
+    // }
 
     return (
       <div className="row">
@@ -33,17 +36,11 @@ var MyFile = React.createClass({
           {name}
         </div>
         <div className="column small-3 right-text-align">
-          {renderFileLink()}
+          {button}
         </div>
       </div>
     )
   }
 });
 
-export default connect((state) => {
-  var {editModeStatus, activeProjectId} = state;
-  return {
-    editModeStatus,
-    activeProjectId
-  }
-})(MyFile);
+export default connect()(MyFile);

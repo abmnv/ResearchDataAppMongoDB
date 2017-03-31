@@ -13,7 +13,7 @@ var ProjectControlBar = React.createClass({
   render () {
     return (
       <div className="project-control-bar">
-        <div className="row">
+        <div className="row no-margins">
           <div className="column small-6">
             <button className="button tiny alert expanded" onClick={this.handleDelete}>Delete</button>
           </div>

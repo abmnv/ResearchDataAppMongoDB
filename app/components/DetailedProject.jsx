@@ -26,7 +26,7 @@ var DetailedProject = React.createClass({
       }
     });
 
-    var {title, createdAt, description, files} = currentProject;
+    var {id, title, createdAt, description, files} = currentProject;
 
     return (
       <div className="project">
@@ -38,7 +38,7 @@ var DetailedProject = React.createClass({
             <p className="files">Files:</p>
           </div>
           <div className="column small-10">
-            <FileList files={files}/>
+            <FileList files={files} projectId={id} editModeStatus={false}/>
           </div>
         </div>
       </div>

@@ -118,3 +118,12 @@
 .edit-project {
   @extend .create-project;
 }
+
+.image-container {
+  max-height: 120px;
+  max-width: 120px;
+}
+
+.row.no-margins {
+  margin: 0;
+}

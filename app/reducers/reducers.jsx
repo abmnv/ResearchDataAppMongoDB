@@ -91,3 +91,12 @@ export var setSearchText = (state = '', action) => {
       return state;
   }
 }
+
+export const setRedirectUrl = (state = '', action) => {
+  switch(action.type) {
+    case 'SET_REDIRECT_URL':
+      return action.url;
+    default:
+      return state
+  }
+}

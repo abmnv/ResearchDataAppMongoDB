@@ -7,21 +7,22 @@ export var CreateProject = React.createClass({
   handleCreateProject (e) {
     e.preventDefault();
 
-    var {dispatch} = this.props;
+    const {dispatch} = this.props;
 
-    var title = this.refs.title.value;
-    var description = this.refs.description.value;
-    var fileList = $.extend(true, [], this.refs.fileUploader.files);
+    const title = this.refs.title.value;
+    const description = this.refs.description.value;
+    const fileList = $.extend(true, [], this.refs.fileUploader.files);
+    const logoImage = this.refs.logoImage.files;
 
-    console.log('title:', title);
-    console.log('description', description);
+    //console.log('title:', title);
+    //console.log('description', description);
 
     if(title && description){
       // this.refs.title.value = '';
       // this.refs.description.value = '';
       // this.refs.fileUploader.value = '';
-      console.log('File list:', fileList);
-      dispatch(actions.startAddProject(title, description, fileList)).then(() => {
+      console.log('logoImage:', logoImage);
+      dispatch(actions.startAddProject(title, description, logoImage[0], fileList)).then(() => {
         this.props.history.push('/');
       });
     }
@@ -49,6 +50,14 @@ export var CreateProject = React.createClass({
           </label>
           <div className="column small-9">
             <textarea name="description" ref="description" rows="3" placeholder="Description of my awesome project"></textarea>
+          </div>
+        </div>
+        <div className="row">
+          <label htmlFor="logoImage" className="column small-3">
+            Logo image:
+          </label>
+          <div className="column small-9">
+            <input type="file" name="logoImage" ref="logoImage"></input>
           </div>
         </div>
         <div className="row">

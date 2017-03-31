@@ -1,14 +1,17 @@
 import React from 'react';
-import * as Redux from 'react-redux';
+import {connect} from 'react-redux';
+import {hashHistory} from 'react-router';
 
 import * as actions from 'actions';
 
 const Login = React.createClass({
 
   handleLogin() {
-    const {dispatch} = this.props;
+    const {dispatch, redirectUrl} = this.props;
 
-    dispatch(actions.startLogin());
+    dispatch(actions.startLogin()).then(() => {
+      hashHistory.push(redirectUrl);
+    });
   },
 
   render () {
@@ -23,4 +26,6 @@ const Login = React.createClass({
   }
 });
 
-export default Redux.connect()(Login);
+export default connect(({redirectUrl}) => {
+  return {redirectUrl};
+})(Login);

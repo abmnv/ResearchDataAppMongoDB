@@ -5,7 +5,7 @@ import * as actions from 'actions';
 import ProjectList from 'ProjectList';
 import CreateProjectButton from 'CreateProjectButton';
 
-export var EditProjects = React.createClass({
+export var Projects = React.createClass({
 
   // componentWillMount(){
   //   var {dispatch} = this.props;
@@ -19,33 +19,17 @@ export var EditProjects = React.createClass({
 
   render () {
     var {params, location} = this.props;
-    console.log('props:', this.props);
-
-    var renderProjects = () => {
-
-      var editModeStatus = location.pathname.indexOf('/edit_projects') > -1;
-      console.log('EditProjects editModeStatus:', editModeStatus);
-
-      if(editModeStatus){
-        return (
-          <div>
-            <ProjectList editModeStatus={editModeStatus}/>
-            <CreateProjectButton/>
-          </div>
-        )
-      }else{
-        return (
-          <ProjectList/>
-        )
-      }
-    }
+    //console.log('props:', this.props);
+    var editModeStatus = location.pathname.indexOf('/edit_projects') > -1;
 
     return (
       <div>
-        {renderProjects()}
+        <ProjectList editModeStatus={editModeStatus}/>
+        {editModeStatus ? (<CreateProjectButton/>) : null}
       </div>
     )
   }
 });
 
-export default connect()(EditProjects);
+export default connect()(Projects);
+//{renderProjects()}

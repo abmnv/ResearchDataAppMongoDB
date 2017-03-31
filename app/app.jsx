@@ -11,6 +11,7 @@ import EditProject from 'EditProject';
 import DetailedProject from 'DetailedProject';
 import CreateProject from 'CreateProject';
 import Login from 'Login';
+import EnsureLoggedInContainer from 'EnsureLoggedInContainer';
 
 var store = require('configureStore').configure();
 var state = store.getState();
@@ -36,10 +37,12 @@ ReactDOM.render(
       <Route path="/" component={Main}>
         <IndexRoute component={Projects}/>
         <Route path="/login" component={Login}/>
-        <Route path="/create_project" component={CreateProject}/>
-        <Route path="/edit_projects" component={Projects}/>
         <Route path="/projects/:projectId" component={DetailedProject}/>
-        <Route path="/edit_projects/:projectId" component={EditProject}/>
+        <Route component={EnsureLoggedInContainer}>
+          <Route path="/edit_projects" component={Projects}/>
+          <Route path="/create_project" component={CreateProject}/>
+          <Route path="/edit_projects/:projectId" component={EditProject}/>
+        </Route>
       </Route>
     </Router>
   </Provider>,

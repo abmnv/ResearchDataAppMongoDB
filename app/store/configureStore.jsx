@@ -12,6 +12,7 @@ export var configure = () => {
     isLoading: reducers.setLoadingStatusReducer,
     searchText: reducers.setSearchText,
     isLoggedIn: reducers.setLoginStatus,
+    redirectUrl: reducers.setRedirectUrl
   });
 
   var store = redux.createStore(reducer, redux.compose(

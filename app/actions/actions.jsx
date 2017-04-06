@@ -1,6 +1,8 @@
 import firebase, {firebaseRef, firebaseStorageRef, githubProvider} from 'app/firebase/';
 import moment from 'moment';
 
+const DEFAULT_IMAGE_URL =  'https://firebasestorage.googleapis.com/v0/b/research-data-app.appspot.com/o/icons%2Fdefault-project.png?alt=media&token=a16a1fa3-df80-4c28-becf-562ff9a61d13';
+
 export var setLoadingStatus = (status) => {
   return {
     type: 'SET_LOADING_STATUS',
@@ -176,6 +178,14 @@ export var startDeleteFile = (projectId, fileId, fileName) => {
   }
 }
 
+export var startUpdateFileSelection = (projedtId, fileId, isSelected) => {
+  return (dispatch, getState) => {
+    return firebaseRef.child('projects/' + projectId + '/files/' + fileId).update({isSelected}).then((snapshot) => {
+
+    })
+  }
+}
+
 export var startUpdateProject = (id, title, description, fileList) => {
   return (dispatch, getState) => {
 
@@ -231,7 +241,7 @@ export var startAddProject = (title, description, logoImage, fileList) => {
     let fileInfo = {};
     let logoImageInfo =  {
       name: logoImage ? logoImage.name : 'default-image.png',
-      url: 'https://firebasestorage.googleapis.com/v0/b/research-data-app.appspot.com/o/icons%2Fdefault-project.png?alt=media&token=a16a1fa3-df80-4c28-becf-562ff9a61d13'
+      url: DEFAULT_IMAGE_URL
     };
 
     let projectSnapshot;

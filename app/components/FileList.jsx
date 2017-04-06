@@ -4,12 +4,12 @@ import {connect} from 'react-redux';
 import MyFile from 'MyFile';
 
 var FileList = (props) => {
-  var {files, projectId, editModeStatus} = props;
+  var {files, filesSelection, projectId, editModeStatus} = props;
 
   var renderFileList = () => {
-    return files.map((myFile) => {
+    return files.map((myFile, i) => {
         return (
-          <MyFile key={myFile.id} {...myFile} projectId={projectId} editModeStatus={editModeStatus}/>
+          <MyFile key={myFile.id} {...myFile} projectId={projectId} isSelected={filesSelection[i]} onToggleFileSelection={props.onToggleFileSelection} editModeStatus={editModeStatus}/>
         )
     });
   }

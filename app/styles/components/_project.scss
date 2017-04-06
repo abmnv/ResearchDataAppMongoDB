@@ -21,11 +21,11 @@
     text-align: left;
     font-weight: bold;
   }
+}
 
-  .button {
-    margin-top: 1rem;
-    margin-bottom: 0;
-  }
+.project-button {
+  margin-top: 1rem;
+  margin-bottom: 0;
 }
 
 .myfile-row {
@@ -85,12 +85,6 @@
 .create-project {
   margin-top: 1rem;
 
-  label {
-    font-size: 1rem;
-    font-weight: bold;
-    color: $project-text-color;
-  }
-
   input {
     color: $project-text-color;
   }
@@ -109,6 +103,12 @@
   }
 }
 
+.project-label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: $project-text-color;
+}
+
 .create-project-button {
   .button {
     margin: 1rem 0 0 0;
@@ -125,5 +125,9 @@
 }
 
 .row.no-margins {
+  margin: 0;
+}
+
+.no-margins {
   margin: 0;
 }

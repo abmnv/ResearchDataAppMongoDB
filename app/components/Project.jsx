@@ -34,7 +34,7 @@ export var Project = React.createClass({
     return (
       <div>
         <div className="project">
-          <Link to={'/projects/'+id} className="button expanded hollow">
+          <Link to={'/projects/'+id} className="button expanded hollow project-button">
             <div className="row">
               <div className="column small-3">
                 <div className="image-container">

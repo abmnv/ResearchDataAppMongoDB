@@ -22,7 +22,7 @@ export var Project = React.createClass({
   handleEditProject () {
     //this.handleSetActiveProject();
     var {id} = this.props;
-    hashHistory.push('/edit_projects/' + id);
+    hashHistory.push('/edit-projects/' + id);
   },
 
   render () {

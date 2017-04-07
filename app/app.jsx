@@ -39,9 +39,9 @@ ReactDOM.render(
         <Route path="/login" component={Login}/>
         <Route path="/projects/:projectId" component={DetailedProject}/>
         <Route component={EnsureLoggedInContainer}>
-          <Route path="/edit_projects" component={Projects}/>
-          <Route path="/create_project" component={CreateProject}/>
-          <Route path="/edit_projects/:projectId" component={EditProject}/>
+          <Route path="/edit-projects" component={Projects}/>
+          <Route path="/create-project" component={CreateProject}/>
+          <Route path="/edit-projects/:projectId" component={EditProject}/>
         </Route>
       </Route>
     </Router>

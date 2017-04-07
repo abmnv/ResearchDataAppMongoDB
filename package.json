@@ -30,13 +30,14 @@
     "react": "^0.14.7",
     "react-addons-test-utils": "^0.14.7",
     "react-dom": "^0.14.7",
+    "react-progress-button": "^5.0.2",
     "react-redux": "^4.4.1",
     "react-router": "^2.0.0",
     "redux": "^3.3.1",
     "redux-thunk": "^2.1.0",
     "sass-loader": "^3.1.2",
     "script-loader": "^0.6.1",
-    "style-loader": "^0.13.0",
+    "style-loader": "^0.13.2",
     "webpack": "^1.12.13"
   },
   "devDependencies": {

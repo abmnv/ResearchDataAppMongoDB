@@ -1,6 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import * as actions from 'actions';
+import ProgressButton from 'react-progress-button';
+
+//import 'style-loader!css-loader!../../node_modules/react-progress-button/react-progress-button.css';
 
 import SimpleFileList from 'SimpleFileList';
 
@@ -8,38 +11,47 @@ export var CreateProject = React.createClass({
 
   getInitialState () {
     return {
-      isUploading: false,
+      title: '',
+      description: '',
       fileList: null,
-      logoImage: null
+      logoImage: null,
+      buttonStatus: 'disabled',
     }
   },
 
   handleCreateProject (e) {
     e.preventDefault();
 
-    const {dispatch} = this.props;
-
-    const title = this.refs.title.value;
-    const description = this.refs.description.value;
-    const fileList = $.extend(true, [], this.refs.fileUploader.files);
-    const logoImage = this.refs.logoImage.files;
-
-    //console.log('title:', title);
-    //console.log('description', description);
+    const title = this.state.title;
+    const description = this.state.description;
+    const fileList = this.state.fileList;
+    const logoImage = this.state.logoImage;
 
     if(title && description){
+      const {dispatch} = this.props;
       // this.refs.title.value = '';
       // this.refs.description.value = '';
       // this.refs.fileUploader.value = '';
       //console.log('logoImage:', logoImage);
+
       this.setState({
-        isUploading: true
+        buttonStatus: 'loading'
       });
 
-      dispatch(actions.startAddProject(title, description, logoImage[0], fileList)).then(() => {
+      dispatch(actions.startAddProject(title, description, logoImage, fileList)).then(() => {
         this.setState({
-          isUploading: false
-        })
+          title: '',
+          description: '',
+          fileList: null,
+          logoImage: null,
+          buttonStatus: 'success',
+        });
+
+        setTimeout(() => {
+          this.setState({
+            buttonStatus: 'disabled',
+          });
+        }, 1100);
         //this.props.history.push('/');
       });
     }
@@ -60,28 +72,39 @@ export var CreateProject = React.createClass({
     const name = e.target.name;
 
     if(name === 'fileUploader'){
-      let fileList = [];
-
-      for(let i=0; i<e.target.files.length; i++){
-        fileList.push(e.target.files[i].name);
-      }
-
-      console.log('handleInputChange fileList', fileList);
+      // let fileList = [];
+      //
+      // for(let i=0; i<e.target.files.length; i++){
+      //   fileList.push(e.target.files[i].name);
+      // }
+      //
+      // console.log('handleInputChange fileList', fileList);
+      var fileList = [...e.target.files];
 
       this.setState({
         fileList
       });
+    }else if(name === 'logoImage'){
+      this.setState({
+        [name]: e.target.files[0]
+      });
     }else{
       this.setState({
-        [name]: e.target.files[0].name
+        [name]: e.target.value,
       });
+
+      if(this.state.title && this.state.description){
+        this.setState({
+          buttonStatus: ''
+        });
+      }
     }
   },
 
   render () {
 
     const renderFileList = this.state.fileList ? <SimpleFileList fileList={this.state.fileList}/> : null;
-    const renderLogoImage = this.state.logoImage ? <div>{this.state.logoImage}</div> : null;
+    const renderLogoImage = this.state.logoImage ? <div>{this.state.logoImage.name}</div> : null;
     // console.log('fileListRender:', fileListRender);
 
     return (
@@ -91,7 +114,7 @@ export var CreateProject = React.createClass({
             Title:
           </label>
           <div className="column small-9">
-            <input type="text" name="title" ref="title" placeholder="My awesome project"></input>
+            <input type="text" name="title" placeholder="My awesome project" value={this.state.title} onChange={this.handleInputChange}></input>
           </div>
         </div>
         <div className="row">
@@ -99,7 +122,7 @@ export var CreateProject = React.createClass({
             Description:
           </label>
           <div className="column small-9">
-            <textarea name="description" ref="description" rows="3" placeholder="Description of my awesome project"></textarea>
+            <textarea name="description" rows="3" placeholder="Description of my awesome project" value={this.state.description} onChange={this.handleInputChange}></textarea>
           </div>
         </div>
         <div className="row">
@@ -108,7 +131,7 @@ export var CreateProject = React.createClass({
           </p>
           <div className="column small-3">
             <label htmlFor="logoImage" className="button tiny">Upload</label>
-            <input type="file" id="logoImage" name="logoImage" ref="logoImage" className="show-for-sr" onChange={this.handleInputChange}></input>
+            <input type="file" id="logoImage" name="logoImage" className="show-for-sr" onChange={this.handleInputChange}></input>
           </div>
           <div className="column small-6">
             {renderLogoImage}
@@ -119,7 +142,7 @@ export var CreateProject = React.createClass({
             Attach files:
           </p>
           <div className="column small-3">
-            <label htmlFor="fileUploader" className="button tiny">Upload Files</label>
+            <label htmlFor="fileUploader" className="button tiny">Upload</label>
             <input type="file" id="fileUploader" name="fileUploader" ref="fileUploader" multiple="multiple" className="show-for-sr" onChange={this.handleInputChange}></input>
           </div>
           <div className="column small-6">
@@ -127,11 +150,8 @@ export var CreateProject = React.createClass({
           </div>
         </div>
         <div className="row control-bar">
-          <div className="column small-5">
-            <button  className="button expanded alert" onClick={this.handleCancel}>Cancel</button>
-          </div>
-          <div className="column small-5 small-offset-2">
-            <button  className="button expanded" onClick={this.handleCreateProject}>Create</button>
+          <div className="column small-4 small-centered">
+            <ProgressButton onClick={this.handleCreateProject} state={this.state.buttonStatus} durationSuccess={1000}>Save</ProgressButton>
           </div>
         </div>
       </div>
@@ -141,3 +161,4 @@ export var CreateProject = React.createClass({
 
 export default connect()(CreateProject);
 //<SimpleFileList fileList={this.state.fileList}/>
+//<button  className="button expanded" onClick={this.handleCreateProject}>Create</button>

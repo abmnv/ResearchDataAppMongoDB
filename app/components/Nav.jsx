@@ -44,7 +44,10 @@ var Nav = React.createClass({
               <IndexLink activeClassName="active-link" to="/">Projects</IndexLink>
             </li>
             <li>
-              <Link activeClassName="active-link" to="/edit_projects">Edit Projects</Link>
+              <Link activeClassName="active-link" to="/create-project">Create Project</Link>
+            </li>
+            <li>
+              <Link activeClassName="active-link" to="/edit-projects">Edit Projects</Link>
             </li>
           </ul>
         </div>

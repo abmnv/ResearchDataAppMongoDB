@@ -10,9 +10,12 @@ import FileList from 'FileList';
 import {getFileBlob} from 'ResearchDataAPI';
 //import * as actions from 'actions';
 
-var DetailedProject = React.createClass({
+class DetailedProject extends React.Component {
 
-  getInitialState () {
+//var DetailedProject = React.createClass({
+  constructor (props) {
+    super(props);
+
     const {projects, params} = this.props;
     const {projectId} = params;
     //console.log('projectId:', projectId);
@@ -33,11 +36,14 @@ var DetailedProject = React.createClass({
 
     // console.log('filesSelection:', filesSelection);
 
-    return {
+    this.state = {
       currentProject,
       filesSelection
     }
-  },
+
+    this.handleToggleFileSelection = this.handleToggleFileSelection.bind(this);
+    this.handleDownloadSelectedFiles = this.handleDownloadSelectedFiles.bind(this);
+  }
 
   handleToggleFileSelection (fileId) {
     //console.log('fileId:', fileId);
@@ -64,7 +70,7 @@ var DetailedProject = React.createClass({
     this.setState({
       filesSelection: newFilesSelection
     });
-  },
+  }
 
   handleDownloadSelectedFiles (done) {
     const {filesSelection, currentProject} = this.state;
@@ -102,28 +108,15 @@ var DetailedProject = React.createClass({
         mime: 'application/zip'
       });
     });
-  },
+  }
   // componentWillUnmount () {
   //   var {dispatch} = this.props;
   //   dispatch(actions.setActiveProject(''));
   // },
 
   render () {
-    //var {title, createdAt, description, files, params} = this.props;
-    // var {projects, params} = this.props;
-    // var {projectId} = params;
-    // //console.log('projectId:', projectId);
-    //
-    // var currentProject;
-    // projects.forEach((project) => {
-    //   if(project.id === projectId){
-    //     //console.log('project:', project);
-    //     currentProject = project;
-    //   }
-    // });
 
     const {currentProject, filesSelection} = this.state;
-
     const {id, title, createdAt, description, files} = currentProject;
 
     return (
@@ -142,21 +135,12 @@ var DetailedProject = React.createClass({
         <DownloadButton className="button success" async={true} genFile={this.handleDownloadSelectedFiles} initTitle={'Download Selected Files'} zippingTitle={'Zipping Files...'} downloadingTitle={'Downloading...'}/>
 
       </div>
-    )
+    );
   }
-});
+};
 
 export default connect((state) => {
-  // var newProject;
-  // state.projects.forEach((project) => {
-  //   if(project.id === state.activeProjectId){
-  //     //console.log('project:', project);
-  //     newProject = project;
-  //   }
-  // });
-  //console.log('newProject:', newProject);
   return state;
-
 })(DetailedProject);
 // <button className="button small success" onClick={this.handleDownloadSelectedFiles}>Download Selected</button>
 //<button className="button small success" onClick={this.handleDownloadAllFiles}>Download All</button>

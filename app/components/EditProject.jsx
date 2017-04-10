@@ -4,20 +4,12 @@ import {connect} from 'react-redux';
 import FileList from 'FileList';
 import * as actions from 'actions';
 
-var EditProject = React.createClass({
+class EditProject extends React.Component {
+//var EditProject = React.createClass({
 
-  // componentWillMount(){
-  //   var {dispatch} = this.props;
-  //   dispatch(actions.changeEditModeStatus(true));
-  // },
-  //
-  // componentWillUnmount(){
-  //   var {dispatch} = this.props;
-  //   dispatch(actions.changeEditModeStatus(false));
-  //   //dispatch(actions.setActiveProject(''));
-  // },
+  constructor (props) {
+    super(props);
 
-  getInitialState () {
     var {projects, params} = this.props;
     var {projectId} = params;
     //console.log('projectId:', projectId);
@@ -33,10 +25,14 @@ var EditProject = React.createClass({
 
     //var {title, description, createdAt, id, files} = currentProject;
     //var {title, description} = this.props;
-    return {
+    this.state = {
       ...currentProject
     }
-  },
+
+    this.handleSave = this.handleSave.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
 
   handleSave (e) {
     e.preventDefault();
@@ -52,13 +48,13 @@ var EditProject = React.createClass({
         this.props.history.push('/');
       });
     }
-  },
+  }
 
   handleCancel (e) {
     e.preventDefault();
 
     this.props.history.push('/edit_projects');
-  },
+  }
 
   handleInputChange (e) {
     e.preventDefault();
@@ -69,7 +65,7 @@ var EditProject = React.createClass({
       [name]: e.target.value
     });
     //console.log(name, ':', e.target.value);
-  },
+  }
 
   render () {
 
@@ -112,17 +108,8 @@ var EditProject = React.createClass({
       </div>
     )
   }
-});
+};
 
 export default connect((state) => {
-  // var newProject;
-  // state.projects.forEach((project) => {
-  //   if(project.id === state.activeProjectId){
-  //     //console.log('project:', project);
-  //     newProject = project;
-  //   }
-  // });
-  //console.log('newProject:', newProject);
   return state;
-
 })(EditProject);

@@ -8,10 +8,12 @@ var EnsureLoggedInContainer = React.createClass({
 
   componentDidMount () {
     const {isLoggedIn, currentUrl, dispatch} = this.props;
+    console.log('EnsureLoggedInContainer props:', this.props);
 
     if(!isLoggedIn){
-      dispatch(actions.setRedirectUrl(currentUrl));
-      hashHistory.push('/login');
+      dispatch(actions.setRedirectUrl(currentUrl)).then(() => {
+        hashHistory.push('/login');
+      });
     }
   },
 

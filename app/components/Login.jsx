@@ -10,6 +10,8 @@ const Login = React.createClass({
     const {dispatch, redirectUrl} = this.props;
 
     dispatch(actions.startLogin()).then(() => {
+      return dispatch(actions.setRedirectUrl(''));
+    }).then(() => {
       hashHistory.push(redirectUrl);
     });
   },

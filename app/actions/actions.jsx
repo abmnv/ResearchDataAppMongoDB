@@ -82,9 +82,15 @@ export var startLogout = () => {
 }
 
 export const setRedirectUrl = (url) => {
-  return {
-    type: 'SET_REDIRECT_URL',
-    url
+  return (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      resolve();
+    }).then(() => {
+      dispatch({
+        type: 'SET_REDIRECT_URL',
+        url
+      });
+    });
   }
 }
 

@@ -7,20 +7,10 @@ import CreateProjectButton from 'CreateProjectButton';
 
 export var Projects = React.createClass({
 
-  // componentWillMount(){
-  //   var {dispatch} = this.props;
-  //   dispatch(actions.changeEditModeStatus(true));
-  // },
-  //
-  // componentWillUnmount(){
-  //   var {dispatch} = this.props;
-  //   dispatch(actions.changeEditModeStatus(false));
-  // },
-
   render () {
     var {params, location} = this.props;
-    //console.log('props:', this.props);
-    var editModeStatus = location.pathname.indexOf('/edit_projects') > -1;
+    //console.log('Projects props:', this.props);
+    var editModeStatus = location.pathname.indexOf('/edit-projects') > -1;
 
     return (
       <div>

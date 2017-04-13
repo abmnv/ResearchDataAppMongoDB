@@ -2,6 +2,7 @@ import * as redux from 'redux';
 import thunk from 'redux-thunk';
 
 import * as reducers from 'reducers';
+import {reducer as formReducer} from 'redux-form';
 
 export var configure = () => {
 
@@ -11,8 +12,10 @@ export var configure = () => {
     //editModeStatus: reducers.editModeStatusReducer,
     isLoading: reducers.setLoadingStatusReducer,
     searchText: reducers.setSearchText,
-    isLoggedIn: reducers.setLoginStatus,
-    redirectUrl: reducers.setRedirectUrl
+    auth: reducers.authReducer,
+    //isLoggedIn: reducers.setLoginStatus,
+    redirectUrl: reducers.setRedirectUrl,
+    form: formReducer
   });
 
   var store = redux.createStore(reducer, redux.compose(

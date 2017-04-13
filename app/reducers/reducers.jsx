@@ -47,14 +47,38 @@ export var projectReducer = (state = [], action) => {
   }
 }
 
-export var setLoginStatus = (state = false, action) => {
+export const authReducer = (state = {isAuth: false, error: null}, action) => {
   switch(action.type) {
-    case 'SET_LOGIN_STATUS':
-      return action.status;
+    case 'AUTH_USER':
+      return {
+        ...state,
+        isAuth: true,
+        error: null
+      };
+    case 'AUTH_ERROR':
+      return {
+        ...state,
+        error: action.error
+      }
+    case 'LOG_OUT':
+      return {
+        ...state,
+        isAuth: false,
+        error: null
+      }
     default:
       return state;
   }
 }
+
+// export var setLoginStatus = (state = false, action) => {
+//   switch(action.type) {
+//     case 'SET_LOGIN_STATUS':
+//       return action.status;
+//     default:
+//       return state;
+//   }
+// }
 
 export var activeProjectReducer = (state = '', action) => {
   switch(action.type){
@@ -92,7 +116,7 @@ export var setSearchText = (state = '', action) => {
   }
 }
 
-export const setRedirectUrl = (state = '', action) => {
+export const setRedirectUrl = (state = '/', action) => {
   switch(action.type) {
     case 'SET_REDIRECT_URL':
       return action.url;

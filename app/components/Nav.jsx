@@ -29,9 +29,9 @@ var Nav = React.createClass({
   },
 
   render: function(){
-    const {isLoggedIn} = this.props;
+    const {isAuth} = this.props;
 
-    const login = isLoggedIn ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<Link activeClassName="active-link" to="/login">Login</Link>);
+    const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<Link activeClassName="active-link" to="/login">Login</Link>);
 
     return (
       <div className="top-bar">
@@ -61,7 +61,7 @@ var Nav = React.createClass({
                 <input type="submit" className="button" value="Search"/>
               </li>
               <li>
-                {login}
+                {auth}
               </li>
             </ul>
           </form>
@@ -71,9 +71,7 @@ var Nav = React.createClass({
   }
 });
 
-export default connect(({isLoggedIn}) => {
-  return {isLoggedIn};
-}, null, null, {pure:false})(Nav);
+export default connect(({auth: {isAuth}}) => ({isAuth}), null, null, {pure:false})(Nav);
 //export default Nav;
 // <div onClick={this.handleLogout}>
 //   Logout

@@ -45,6 +45,40 @@ export var deleteProject = (id) => {
   }
 }
 
+export const authError = (error) => {
+  return {
+    type: 'AUTH_ERROR',
+    error
+  }
+}
+
+export const authUser = () => {
+  return {
+    type: 'AUTH_USER',
+  }
+}
+
+export const startSignUpUser = (credentials) => {
+  return (dispatch, getState) => {
+    return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password).then((response) => {
+      dispatch(authUser());
+    }).catch((err) => {
+      dispatch(authError(err.message));
+    });
+  }
+}
+
+export const startEmailPasswordLogin = (credentials) => {
+  return (dispatch, getState) => {
+    return firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password).then(() => {
+      dispatch(authUser());
+    }).catch((err) => {
+      //console.log('startEmailPasswordLogin:', err);
+      dispatch(authError(err.message));
+    });
+  }
+}
+
 export var login = () => {
   return {
     type: 'SET_LOGIN_STATUS',
@@ -52,11 +86,11 @@ export var login = () => {
   }
 }
 
-export var startLogin = () => {
+export var startGithubLogin = () => {
   return (dispatch, getState) => {
     return firebase.auth().signInWithPopup(githubProvider).then((result) => {
       console.log('Auth worked', result);
-      dispatch(login());
+      dispatch(authUser());
     }).catch((e) => {
       console.log('Unable to auth', e);
     });
@@ -65,8 +99,7 @@ export var startLogin = () => {
 
 export var logout = () => {
   return {
-    type: 'SET_LOGIN_STATUS',
-    status: false
+    type: 'LOG_OUT',
   }
 }
 
@@ -74,9 +107,9 @@ export var startLogout = () => {
   return (dispatch, getState) => {
     return firebase.auth().signOut().then(() => {
       dispatch(logout());
-      console.log('Successfully logged out');
+      //console.log('Successfully logged out');
     }).catch((e) => {
-      console.log('Error while trying to log out', e);
+      //console.log('Error while trying to log out', e);
     });
   }
 }

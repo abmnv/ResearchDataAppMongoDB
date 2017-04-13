@@ -6,11 +6,11 @@ import * as actions from 'actions';
 
 var EnsureLoggedInContainer = React.createClass({
 
-  componentDidMount () {
-    const {isLoggedIn, currentUrl, dispatch} = this.props;
-    console.log('EnsureLoggedInContainer props:', this.props);
+  componentWillMount () {
+    const {isAuth, currentUrl, dispatch} = this.props;
+    //console.log('EnsureLoggedInContainer props:', this.props);
 
-    if(!isLoggedIn){
+    if(!isAuth){
       dispatch(actions.setRedirectUrl(currentUrl)).then(() => {
         hashHistory.push('/login');
       });
@@ -18,8 +18,9 @@ var EnsureLoggedInContainer = React.createClass({
   },
 
   render () {
-    const {isLoggedIn} = this.props;
-    if(isLoggedIn){
+    const {isAuth} = this.props;
+
+    if(isAuth){
       return (
         this.props.children
       )
@@ -34,7 +35,7 @@ var EnsureLoggedInContainer = React.createClass({
 
 export default connect((state, ownProps) => {
   return {
-    isLoggedIn: state.isLoggedIn,
+    isAuth: state.auth.isAuth,
     currentUrl: ownProps.location.pathname
   }
 })(EnsureLoggedInContainer);

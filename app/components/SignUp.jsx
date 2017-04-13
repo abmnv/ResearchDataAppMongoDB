@@ -19,40 +19,32 @@ const validate = (values) => {
     errors.password = 'Please enter password'
   }
 
+  if(!values.passwordConfirmation){
+    errors.passwordConfirmation = 'Please enter password';
+  }
+
+  if(values.password !== values.passwordConfirmation){
+    errors.passwordConfirmation = 'Passwords do not match';
+  }
+
   return errors;
 }
 
 
-class Login extends React.Component {
-
-  // constructor(props) {
-  //   super(props);
-  //
-  //   this.handleLogin = this.handleLogin.bind(this);
-  // }
+class SignUp extends React.Component {
 
   componentWillUnmount () {
     const {dispatch} = this.props;
-
+    
     if(this.props.auth.error){
       dispatch(actions.authError(null));
     }
   }
 
-  handleGithubLogin = () => {
-    const {dispatch, redirectUrl} = this.props;
-
-    dispatch(actions.startGitHubLogin()).then(() => {
-      return dispatch(actions.setRedirectUrl('/'));
-    }).then(() => {
-      hashHistory.push(redirectUrl);
-    });
-  }
-
-  handleEmailPasswordLogin = (values) => {
-    console.log('handleEmailPasswordSubmit values:', values);
+  handleSignUp = (values) => {
+    //console.log('handleEmailPasswordSubmit values:', values);
     const {dispatch} = this.props;
-    dispatch(actions.startEmailPasswordLogin(values)).then(() => {
+    dispatch(actions.startSignUpUser(values)).then(() => {
       if(this.props.auth.isAuth){
         dispatch(actions.setRedirectUrl('/'));
         hashHistory.push(this.props.redirectUrl);
@@ -61,7 +53,7 @@ class Login extends React.Component {
   }
 
   renderField = ({input, label, type, meta: {touched, error}}) => {
-    console.log('renderField touched, error:', touched, error);
+    //console.log('renderField touched, error:', touched, error);
     return (
       <fieldset>
 
@@ -87,30 +79,24 @@ class Login extends React.Component {
   render () {
     return (
       <div className="callout callout-auth">
-        <h4>Log in</h4>
+        <h4>Sign up for account</h4>
 
         {this.renderAuthError()}
 
-        <form onSubmit={this.props.handleSubmit(this.handleEmailPasswordLogin)}>
+        <form onSubmit={this.props.handleSubmit(this.handleSignUp)}>
           <Field name="email" component={this.renderField} type="text" label="Email"/>
           <Field name="password" component={this.renderField} type="password" label="Password"/>
+          <Field name="passwordConfirmation" component={this.renderField} type="password" label="Password Confirmation"/>
+
           <button type="submit" className="button">Login</button>
         </form>
-
-        <Link to="/signup" activeClassName="active-link">Sign up here</Link>
-
-        <h4>-or-</h4>
-        <h4>
-          Log in with GitHub account
-        </h4>
-        <button className="button" onClick={this.handleGithubLogin}>Login with GitHub</button>
       </div>
     )
   }
 }
 
 export default connect(({redirectUrl, auth}) => ({redirectUrl, auth}))(reduxForm({
-  form: 'login',
+  form: 'signup',
   validate
-})(Login));
+})(SignUp));
 //<label>{label}</label>

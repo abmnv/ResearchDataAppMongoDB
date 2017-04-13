@@ -52,16 +52,20 @@ export const authError = (error) => {
   }
 }
 
-export const authUser = () => {
+export const authUser = (role) => {
   return {
     type: 'AUTH_USER',
+    role
   }
 }
 
 export const startSignUpUser = (credentials) => {
   return (dispatch, getState) => {
-    return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password).then((response) => {
-      dispatch(authUser());
+    return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password).then((user) => {
+    //   console.log('user:', user);
+    //   return firebaseRef.child(`users/${user.uid}`).set({role: 'user'});
+    // }).then(() => {
+      dispatch(authUser('user'));
     }).catch((err) => {
       dispatch(authError(err.message));
     });
@@ -70,8 +74,11 @@ export const startSignUpUser = (credentials) => {
 
 export const startEmailPasswordLogin = (credentials) => {
   return (dispatch, getState) => {
-    return firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password).then(() => {
-      dispatch(authUser());
+    return firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password).then((user) => {
+      return firebaseRef.child(`users/${user.uid}/role`).once('value');
+    }).then((snapshot) => {
+      console.log('user role', snapshot.val());
+      dispatch(authUser(snapshot.val()));
     }).catch((err) => {
       //console.log('startEmailPasswordLogin:', err);
       dispatch(authError(err.message));

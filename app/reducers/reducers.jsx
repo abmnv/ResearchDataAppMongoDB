@@ -47,13 +47,14 @@ export var projectReducer = (state = [], action) => {
   }
 }
 
-export const authReducer = (state = {isAuth: false, error: null}, action) => {
+export const authReducer = (state = {isAuth: false, error: null, role: null}, action) => {
   switch(action.type) {
     case 'AUTH_USER':
       return {
         ...state,
         isAuth: true,
-        error: null
+        error: null,
+        role: action.role
       };
     case 'AUTH_ERROR':
       return {
@@ -64,7 +65,8 @@ export const authReducer = (state = {isAuth: false, error: null}, action) => {
       return {
         ...state,
         isAuth: false,
-        error: null
+        error: null,
+        role: null
       }
     default:
       return state;

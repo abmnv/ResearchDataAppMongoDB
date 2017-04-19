@@ -38,7 +38,8 @@ class DetailedProject extends React.Component {
 
     this.state = {
       currentProject,
-      filesSelection
+      filesSelection,
+      areAllSelected: false
     }
 
     this.handleToggleFileSelection = this.handleToggleFileSelection.bind(this);
@@ -102,12 +103,36 @@ class DetailedProject extends React.Component {
 
     seq.then((contents) => {
       //console.log('contents:', contents);
-      done({
+      return done({
         filename: 'data.zip',
         contents,
         mime: 'application/zip'
       });
+    }).then(() => {
+      const newFilesSelection = filesSelection.map(() => {
+        return false;
+      })
+
+      this.setState({
+        filesSelection: newFilesSelection,
+        areAllSelected: false
+      });
     });
+  }
+
+  handleToggleAllSelected = () => {
+
+    const {filesSelection, areAllSelected} = this.state;
+    //console.log('areAllSelected:', areAllSelected);
+
+    const newAreAllSelected = !areAllSelected;
+
+    const newFilesSelection = newAreAllSelected ? (filesSelection.map(() => true)) : (filesSelection.map(() => false))
+
+    this.setState({
+      areAllSelected: newAreAllSelected,
+      filesSelection: newFilesSelection
+    })
   }
   // componentWillUnmount () {
   //   var {dispatch} = this.props;
@@ -116,8 +141,10 @@ class DetailedProject extends React.Component {
 
   render () {
 
-    const {currentProject, filesSelection} = this.state;
+    const {currentProject, filesSelection, areAllSelected} = this.state;
     const {id, title, createdAt, description, files} = currentProject;
+    console.log('areAllSelected:', areAllSelected);
+
 
     return (
       <div className="project">
@@ -125,15 +152,20 @@ class DetailedProject extends React.Component {
         <p className="date-created">Created on {moment.unix(createdAt).format('MMM Do, YYYY')}</p>
         <p className="project-description">{description}</p>
         <div className="row">
-          <div className="column small-2">
-            <p className="files">Files:</p>
+          <div className="column small-offset-11 small-1">
+            <input type="checkbox" name="allSelection" checked={areAllSelected} onChange={this.handleToggleAllSelected}/>
           </div>
-          <div className="column small-10">
+        </div>
+        <div className="row">
+          <div className="column small-12">
             <FileList files={files} filesSelection={filesSelection} onToggleFileSelection={this.handleToggleFileSelection} projectId={id} editModeStatus={false}/>
           </div>
         </div>
-        <DownloadButton className="button success" async={true} genFile={this.handleDownloadSelectedFiles} initTitle={'Download Selected Files'} zippingTitle={'Zipping Files...'} downloadingTitle={'Downloading...'}/>
-
+        <div className="row">
+          <div className="column small-6">
+            <DownloadButton className="button success left" async={true} genFile={this.handleDownloadSelectedFiles} initTitle={'Download Selected Files'} zippingTitle={'Zipping Files...'} downloadingTitle={'Downloading...'}/>
+          </div>
+        </div>
       </div>
     );
   }

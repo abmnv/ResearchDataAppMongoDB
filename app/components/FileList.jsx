@@ -8,6 +8,7 @@ var FileList = (props) => {
 
   var renderFileList = () => {
     return files.map((myFile, i) => {
+        //console.log('myFile:', myFile, 'i:', i);
         return (
           <MyFile key={myFile.id} {...myFile} projectId={projectId} isSelected={filesSelection[i]} onToggleFileSelection={props.onToggleFileSelection} editModeStatus={editModeStatus}/>
         )

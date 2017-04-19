@@ -29,9 +29,14 @@ var MyFile = React.createClass({
     const {id, name, url, isSelected, projectId, editModeStatus} = this.props;
     //console.log('editModeStatus:', editModeStatus);
     //console.log('MyFile editModeStatus:', editModeStatus);
-    console.log('isSelected:', isSelected);
+    //sconsole.log('isSelected:', isSelected);
 
-    const button = editModeStatus ? (<button className="button tiny alert no-margins" onClick={this.handleDeleteFile}>Delete</button>) : (<a href={url} className="button tiny success no-margins">Download</a>);
+    const button = editModeStatus ? (<button className="button tiny alert" onClick={this.handleDeleteFile}>Delete</button>) : (<a href={url} className="button tiny success">Download</a>);
+
+    const selectionBox = editModeStatus ? (null) : (<input type="checkbox" checked={isSelected} onChange={() => {
+        //console.log('checkbox was clicked');
+        this.props.onToggleFileSelection(id);
+      }}></input>);
 
     // var renderFileLink = () => {
     //   if(editModeStatus){
@@ -54,10 +59,7 @@ var MyFile = React.createClass({
           {button}
         </div>
         <div className="column small-1">
-          <input type="checkbox" ref="checkbox" checked={isSelected} onChange={() => {
-              //console.log('checkbox was clicked');
-              this.props.onToggleFileSelection(id);
-            }}></input>
+          {selectionBox}
         </div>
       </div>
     )

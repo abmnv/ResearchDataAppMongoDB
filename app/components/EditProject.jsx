@@ -10,27 +10,20 @@ class EditProject extends React.Component {
   constructor (props) {
     super(props);
 
-    var {projects, params} = this.props;
-    var {projectId} = params;
+    const {currentProject} = this.props;
     //console.log('projectId:', projectId);
 
-    var currentProject;
-    projects.forEach((project) => {
-      if(project.id === projectId){
-        //console.log('project:', project);
-        currentProject = project;
-      }
+    const filesSelection = currentProject.files.map((myFile) => {
+      return false;
     });
-    //console.log('currentProject:', currentProject);
 
-    //var {title, description, createdAt, id, files} = currentProject;
-    //var {title, description} = this.props;
     this.state = {
-      ...currentProject
+      ...currentProject,
+      filesSelection
     }
 
     this.handleSave = this.handleSave.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
+    //this.handleCancel = this.handleCancel.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
@@ -50,11 +43,11 @@ class EditProject extends React.Component {
     }
   }
 
-  handleCancel (e) {
-    e.preventDefault();
-
-    this.props.history.push('/edit_projects');
-  }
+  // handleCancel (e) {
+  //   e.preventDefault();
+  //
+  //   this.props.history.push('/edit-projects');
+  // }
 
   handleInputChange (e) {
     e.preventDefault();
@@ -69,7 +62,7 @@ class EditProject extends React.Component {
 
   render () {
 
-    var {title, description, createdAt, id, files} = this.state;
+    var {title, description, createdAt, id, files, filesSelection} = this.state;
 
     return (
       <div className="edit-project">
@@ -88,7 +81,7 @@ class EditProject extends React.Component {
         <div className="row">
           <label htmlFor="files" className="column small-3">Files:</label>
           <div className="column small-9">
-            <FileList files={files} projectId={id} editModeStatus={true}/>
+            <FileList files={files} projectId={id} editModeStatus={true} filesSelection={filesSelection}/>
           </div>
         </div>
         <div className="row">
@@ -98,9 +91,6 @@ class EditProject extends React.Component {
           </div>
         </div>
         <div className="row control-bar">
-          <div className="column small-5">
-            <button className="button alert expanded" onClick={this.handleCancel}>Cancel</button>
-          </div>
           <div className="column small-5 small-offset-2 small-5">
             <button className="button expanded" onClick={this.handleSave}>Save</button>
           </div>
@@ -110,6 +100,18 @@ class EditProject extends React.Component {
   }
 };
 
-export default connect((state) => {
-  return state;
+export default connect((state, ownProps) => {
+  const {projects} = state;
+  let currentProject;
+
+  const {params: {projectId}} = ownProps;
+
+  projects.forEach((project) => {
+    if(project.id === projectId){
+      //console.log('project:', project);
+      currentProject = project;
+    }
+  });
+
+  return {currentProject};
 })(EditProject);

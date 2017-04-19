@@ -4,7 +4,14 @@ import {connect} from 'react-redux';
 
 import * as actions from 'actions';
 
-var Nav = React.createClass({
+class Nav extends React.Component {
+
+  constructor(props){
+    super(props);
+
+    this.handleLogout = this.handleLogout.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
   handleSubmit (e) {
     e.preventDefault();
@@ -17,7 +24,8 @@ var Nav = React.createClass({
     //console.log('Search text:', searchText);
 
     dispatch(actions.setSearchText(searchText));
-  },
+
+  }
 
   handleLogout (e) {
     e.preventDefault();
@@ -26,9 +34,9 @@ var Nav = React.createClass({
 
     dispatch(actions.startLogout());
     hashHistory.push('/');
-  },
+  }
 
-  render: function(){
+  render () {
     const {isAuth} = this.props;
 
     const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<Link activeClassName="active-link" to="/login">Login</Link>);
@@ -58,9 +66,6 @@ var Nav = React.createClass({
                 <input type="search" ref="projectName" placeholder="Search"/>
               </li>
               <li>
-                <input type="submit" className="button" value="Search"/>
-              </li>
-              <li>
                 {auth}
               </li>
             </ul>
@@ -69,10 +74,13 @@ var Nav = React.createClass({
       </div>
     );
   }
-});
+}
 
 export default connect(({auth: {isAuth}}) => ({isAuth}), null, null, {pure:false})(Nav);
 //export default Nav;
 // <div onClick={this.handleLogout}>
 //   Logout
 // </div>
+// <li>
+//   <input type="submit" className="button" value="Search"/>
+// </li>

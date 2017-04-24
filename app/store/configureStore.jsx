@@ -15,7 +15,8 @@ export var configure = () => {
     auth: reducers.authReducer,
     //isLoggedIn: reducers.setLoginStatus,
     redirectUrl: reducers.setRedirectUrl,
-    form: formReducer
+    form: formReducer,
+    currentModal: reducers.modalReducer
   });
 
   var store = redux.createStore(reducer, redux.compose(

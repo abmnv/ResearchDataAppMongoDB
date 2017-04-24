@@ -13,6 +13,7 @@ import CreateProject from 'CreateProject';
 import Login from 'Login';
 import SignUp from 'SignUp';
 import EnsureLoggedInContainer from 'EnsureLoggedInContainer';
+import ModalContainer from 'ModalContainer';
 
 var store = require('configureStore').configure();
 var state = store.getState();
@@ -45,6 +46,7 @@ ReactDOM.render(
           <Route path="/create-project" component={CreateProject}/>
           <Route path="/edit-projects/:projectId" component={EditProject}/>
         </Route>
+        <Route component={ModalContainer}/>
       </Route>
     </Router>
   </Provider>,

@@ -126,3 +126,12 @@ export const setRedirectUrl = (state = '/', action) => {
       return state
   }
 }
+
+export const modalReducer = (state = null, action) => {
+  switch(action.type) {
+    case 'SET_CURRENT_MODAL':
+      return action.currentModal;
+    default:
+      return state;
+  }
+}

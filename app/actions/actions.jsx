@@ -59,6 +59,13 @@ export const authUser = (role) => {
   }
 }
 
+export const setCurrentModal = (currentModal) => {
+  return {
+    type: 'SET_CURRENT_MODAL',
+    currentModal
+  }
+}
+
 export const startSignUpUser = (credentials) => {
   return (dispatch, getState) => {
     return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password).then((user) => {

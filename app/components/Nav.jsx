@@ -3,6 +3,7 @@ import {Link, IndexLink, hashHistory} from 'react-router';
 import {connect} from 'react-redux';
 
 import * as actions from 'actions';
+import LoginModal from 'LoginModal';
 
 class Nav extends React.Component {
 
@@ -39,7 +40,8 @@ class Nav extends React.Component {
   render () {
     const {isAuth} = this.props;
 
-    const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<Link activeClassName="active-link" to="/login">Login</Link>);
+    //const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<Link activeClassName="active-link" to="/login">Login</Link>);
+    const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<LoginModal/>);
 
     return (
       <div className="top-bar">

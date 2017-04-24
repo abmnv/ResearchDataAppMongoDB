@@ -30,7 +30,7 @@ var EnsureLoggedInContainer = React.createClass({
     }else{
       return (
         <div className="callout callout-auth login-error">
-          <h4>You don not have privilege to modify data. Please, contact your administrator.</h4>
+          <h4>You do not have privilege to modify data. Please, contact your administrator.</h4>
         </div>
       );
     }

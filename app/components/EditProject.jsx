@@ -38,8 +38,15 @@ class EditProject extends React.Component {
       //console.log('title:', title);
       var {dispatch} = this.props;
       dispatch(actions.startUpdateProject(id, title, description, fileList)).then(() => {
-        this.props.history.push('/');
+        const {currentProject} = this.props;
+        this.setState({
+          ...currentProject
+        });
       });
+
+      // .then(() => {
+      //   this.props.history.push('/');
+      // });
     }
   }
 
@@ -67,32 +74,39 @@ class EditProject extends React.Component {
     return (
       <div className="edit-project">
         <div className="row">
-          <label htmlhtmlFor="title" className="column small-3">Title:</label>
+          <label htmlhtmlFor="title" className="column small-3 project-label">Title:</label>
           <div className="column small-9">
             <input type="text" name="title" onChange={this.handleInputChange} value={this.state.title}></input>
           </div>
         </div>
         <div className="row">
-          <label htmlFor="description" className="column small-3">Description:</label>
+          <label htmlFor="description" className="column small-3 project-label">Description:</label>
           <div className="column small-9">
             <textarea rows="3" name="description" onChange={this.handleInputChange} value={this.state.description}></textarea>
           </div>
         </div>
         <div className="row">
-          <label htmlFor="files" className="column small-3">Files:</label>
+          <label htmlFor="files" className="column small-3 project-label">Files:</label>
           <div className="column small-9">
-            <FileList files={files} projectId={id} editModeStatus={true} filesSelection={filesSelection}/>
+            <FileList files={this.props.currentProject.files} projectId={id} editModeStatus={true} filesSelection={filesSelection}/>
           </div>
         </div>
         <div className="row">
-          <label htmlFor="fileUploader" className="column small-3">Attach Files:</label>
+          <p className="column small-3 project-label">
+            Attach files:
+          </p>
           <div className="column small-9">
-            <input type="file" name="fileUploader" ref="fileUploader" multiple="multiple"></input>
+            <div className="row">
+              <div className="column small-offset-9 small-3 right-text-align">
+                <label htmlFor="fileUploader" className="button tiny radius">Upload</label>
+                <input type="file" id="fileUploader" name="fileUploader" ref="fileUploader" multiple="multiple" className={"show-for-sr"}/>
+              </div>
+            </div>
           </div>
         </div>
         <div className="row control-bar">
-          <div className="column small-5 small-offset-2 small-5">
-            <button className="button expanded" onClick={this.handleSave}>Save</button>
+          <div className="column small-4 small-offset-8">
+            <button className="button expanded radius" onClick={this.handleSave}>Save</button>
           </div>
         </div>
       </div>
@@ -115,3 +129,5 @@ export default connect((state, ownProps) => {
 
   return {currentProject};
 })(EditProject);
+// <label htmlFor="fileUploader" className="column small-3">Attach Files:</label>
+//

@@ -130,7 +130,7 @@ export var CreateProject = React.createClass({
             Logo image:
           </p>
           <div className="column small-3">
-            <label htmlFor="logoImage" className="button tiny">Upload</label>
+            <label htmlFor="logoImage" className="button tiny radius">Upload</label>
             <input type="file" id="logoImage" name="logoImage" className="show-for-sr" onChange={this.handleInputChange}></input>
           </div>
           <div className="column small-6">
@@ -141,16 +141,16 @@ export var CreateProject = React.createClass({
           <p className="column small-3 project-label">
             Attach files:
           </p>
-          <div className="column small-3">
-            <label htmlFor="fileUploader" className="button tiny">Upload</label>
+          <div className="column small-2">
+            <label htmlFor="fileUploader" className="button tiny radius">Upload</label>
             <input type="file" id="fileUploader" name="fileUploader" ref="fileUploader" multiple="multiple" className="show-for-sr" onChange={this.handleInputChange}></input>
           </div>
-          <div className="column small-6">
+          <div className="column small-7">
             {renderFileList}
           </div>
         </div>
         <div className="row control-bar">
-          <div className="column small-4 small-centered">
+          <div className="column small-offset-8 small-4">
             <ProgressButton onClick={this.handleCreateProject} state={this.state.buttonStatus} durationSuccess={1000}>Save</ProgressButton>
           </div>
         </div>

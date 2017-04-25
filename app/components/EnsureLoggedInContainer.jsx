@@ -8,12 +8,13 @@ var EnsureLoggedInContainer = React.createClass({
 
   componentWillMount () {
     const {auth, currentUrl, dispatch} = this.props;
-    //console.log('EnsureLoggedInContainer props:', this.props);
+    console.log('EnsureLoggedInContainer props:', this.props);
 
     if(!auth.isAuth){
-      dispatch(actions.setRedirectUrl(currentUrl)).then(() => {
-        hashHistory.push('/login');
-      });
+      dispatch(actions.setCurrentModal('Login'));
+      // dispatch(actions.setRedirectUrl(currentUrl)).then(() => {
+      //   hashHistory.push('/login');
+      // });
     }
     // else if(auth.role !== 'admin'){
     //   hashHistory.push('/');
@@ -27,10 +28,15 @@ var EnsureLoggedInContainer = React.createClass({
       return (
         this.props.children
       )
-    }else{
+    }else if (isAuth && role !== 'admin'){
       return (
         <div className="callout callout-auth login-error">
           <h4>You do not have privilege to modify data. Please, contact your administrator.</h4>
+        </div>
+      );
+    }else{
+      return (
+        <div>
         </div>
       );
     }

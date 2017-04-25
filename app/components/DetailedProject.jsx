@@ -162,8 +162,8 @@ class DetailedProject extends React.Component {
           </div>
         </div>
         <div className="row">
-          <div className="column small-6">
-            <DownloadButton className="button success left" async={true} genFile={this.handleDownloadSelectedFiles} initTitle={'Download Selected Files'} zippingTitle={'Zipping Files...'} downloadingTitle={'Downloading...'}/>
+          <div className="column small-offset-6 small-6">
+            <DownloadButton className="button success right radius" async={true} genFile={this.handleDownloadSelectedFiles} initTitle={'Download Selected Files'} zippingTitle={'Zipping Files...'} downloadingTitle={'Downloading...'}/>
           </div>
         </div>
       </div>

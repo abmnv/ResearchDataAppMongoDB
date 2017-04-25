@@ -7,7 +7,7 @@ var CreateProjectButton = React.createClass({
     return (
       <div className="create-project-button">
         <div className="row no-margins">
-          <Link to="/create-project" className="button expanded">Create New Project</Link>
+          <Link to="/create-project" className="button expanded radius">Create New Project</Link>
         </div>
       </div>
     );

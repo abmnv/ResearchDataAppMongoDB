@@ -6,10 +6,11 @@ import SignUpModal from 'SignUpModal';
 
 class ModalContainer extends React.Component {
 
-  render (
+  render () {
     const {currentModal} = this.props;
+    console.log('currentModal:', currentModal);
 
-    const renderModal(){
+    const renderModal = () => {
       switch(currentModal){
         case 'Login':
           return (<LoginModal/>);
@@ -22,10 +23,10 @@ class ModalContainer extends React.Component {
 
     return (
       <div>
-        renderModal();
+        {renderModal()}
       </div>
     )
-  )
+  }
 }
 
 export default connect(({currentModal}) => ({currentModal}))(ModalContainer);

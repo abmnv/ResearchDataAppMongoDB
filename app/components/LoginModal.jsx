@@ -35,6 +35,8 @@ class LoginModal extends React.Component {
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleOpenSignUpModal = this.handleOpenSignUpModal.bind(this);
+
   }
 
   handleOpenModal () {
@@ -44,9 +46,23 @@ class LoginModal extends React.Component {
   }
 
   handleCloseModal () {
-    this.setState({
-      modalIsOpen: false
-    })
+    const {dispatch} = this.props;
+
+    dispatch(actions.setCurrentModal(null));
+    hashHistory.push('/');
+    // this.setState({
+    //   modalIsOpen: false
+    // })
+  }
+
+  handleOpenSignUpModal () {
+    const {dispatch} = this.props;
+
+    dispatch(actions.setCurrentModal('SignUp'));
+
+    // this.setState({
+    //   modalIsOpen: false
+    // })
   }
 
   componentWillUnmount () {
@@ -72,8 +88,9 @@ class LoginModal extends React.Component {
     const {dispatch} = this.props;
     dispatch(actions.startEmailPasswordLogin(values)).then(() => {
       if(this.props.auth.isAuth){
-        dispatch(actions.setRedirectUrl('/'));
-        hashHistory.push(this.props.redirectUrl);
+        dispatch(actions.setCurrentModal(null));
+        // dispatch(actions.setRedirectUrl('/'));
+        // hashHistory.push(this.props.redirectUrl);
       }
     });
   }
@@ -82,9 +99,8 @@ class LoginModal extends React.Component {
     console.log('renderField touched, error:', touched, error);
     return (
       <fieldset>
-
         <div>
-          <input {...input} placeholder={label} type={type} style={{width:"350px", borderRadius:"5px"}}/>
+          <input className="modal-input" {...input} placeholder={label} type={type}/>
           {touched && error && <div className="login-error">{error}</div>}
         </div>
       </fieldset>
@@ -103,7 +119,7 @@ class LoginModal extends React.Component {
   }
 
   render () {
-    const {modalIsOpen} = this.state;
+    //const {modalIsOpen} = this.state;
 
     const customStyles = {
       content : {
@@ -120,8 +136,7 @@ class LoginModal extends React.Component {
 
     return (
       <div>
-        <button className='login-button' onClick={this.handleOpenModal}>Login</button>
-        <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={this.handleCloseModal}>
+        <Modal isOpen={true} style={customStyles} onRequestClose={this.handleCloseModal}>
           <div>
             {this.renderAuthError()}
 
@@ -132,7 +147,7 @@ class LoginModal extends React.Component {
             </form>
 
             <div className="center-text-align">
-              <SignUpModal onCloseModal={this.handleCloseModal}/>
+              <button className="signup-button" onClick={this.handleOpenSignUpModal}>Sign up for a new account</button>
             </div>
           </div>
         </Modal>

@@ -14,6 +14,12 @@ class Nav extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  handleOpenLoginModal = () => {
+    const {dispatch} = this.props;
+
+    dispatch(actions.setCurrentModal('Login'));
+  }
+
   handleSubmit (e) {
     e.preventDefault();
 
@@ -41,7 +47,7 @@ class Nav extends React.Component {
     const {isAuth} = this.props;
 
     //const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<Link activeClassName="active-link" to="/login">Login</Link>);
-    const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<LoginModal/>);
+    const auth = isAuth ? (<Link activeClassName="active-link" onClick={this.handleLogout}>Logout</Link>) : (<button className='login-button' onClick={this.handleOpenLoginModal}>Login</button>);
 
     return (
       <div className="top-bar">
@@ -62,16 +68,16 @@ class Nav extends React.Component {
           </ul>
         </div>
         <div className="top-bar-right">
-          <form onSubmit={this.handleSubmit}>
-            <ul className="menu">
-              <li>
+          <ul className="menu">
+            <li>
+              <form onSubmit={this.handleSubmit}>
                 <input type="search" ref="projectName" placeholder="Search"/>
-              </li>
-              <li>
-                {auth}
-              </li>
-            </ul>
-          </form>
+              </form>
+            </li>
+            <li>
+              {auth}
+            </li>
+          </ul>
         </div>
       </div>
     );

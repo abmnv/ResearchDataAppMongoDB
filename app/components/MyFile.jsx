@@ -9,7 +9,7 @@ var MyFile = React.createClass({
     e.preventDefault();
 
     const {id, name, projectId, dispatch} = this.props;
-    //console.log('projectId:', projectId);
+    console.log('projectId:', projectId);
     dispatch(actions.startDeleteFile(projectId, id, name));
   },
 
@@ -31,12 +31,37 @@ var MyFile = React.createClass({
     //console.log('MyFile editModeStatus:', editModeStatus);
     //sconsole.log('isSelected:', isSelected);
 
-    const button = editModeStatus ? (<button className="button tiny alert" onClick={this.handleDeleteFile}>Delete</button>) : (<a href={url} className="button tiny success">Download</a>);
-
-    const selectionBox = editModeStatus ? (null) : (<input type="checkbox" checked={isSelected} onChange={() => {
-        //console.log('checkbox was clicked');
-        this.props.onToggleFileSelection(id);
-      }}></input>);
+    const renderFile = () => {
+      if(editModeStatus){
+        return (
+          <div className="row">
+            <div className="column small-9 left-text-align">
+              {name}
+            </div>
+            <div className="column small-3 right-text-align">
+              <button className="button tiny alert radius" onClick={this.handleDeleteFile}>Delete</button>
+            </div>
+          </div>
+        )
+      }else{
+        return (
+          <div className="row">
+            <div className="column small-8 left-text-align">
+              {name}
+            </div>
+            <div className="column small-3 right-text-align">
+              <a href={url} className="button tiny success radius">Download</a>
+            </div>
+            <div className="column small-1">
+              <input type="checkbox" checked={isSelected} onChange={() => {
+                  //console.log('checkbox was clicked');
+                  this.props.onToggleFileSelection(id);
+                }}></input>
+            </div>
+          </div>
+        )
+      }
+    }
 
     // var renderFileLink = () => {
     //   if(editModeStatus){
@@ -51,16 +76,8 @@ var MyFile = React.createClass({
     // }
 
     return (
-      <div className="row">
-        <div className="column small-8 left-text-align">
-          {name}
-        </div>
-        <div className="column small-3 right-text-align">
-          {button}
-        </div>
-        <div className="column small-1">
-          {selectionBox}
-        </div>
+      <div>
+        {renderFile()}
       </div>
     )
   }

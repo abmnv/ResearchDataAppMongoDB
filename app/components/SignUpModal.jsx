@@ -53,9 +53,15 @@ class SignUpModal extends React.Component {
   }
 
   handleCloseModal () {
-    this.setState({
-      modalIsOpen: false
-    });
+
+    const {dispatch} = this.props;
+    dispatch(actions.setCurrentModal(null));
+    hashHistory.push('/');
+
+
+    // this.setState({
+    //   modalIsOpen: false
+    // });
   }
 
   componentWillUnmount () {
@@ -71,8 +77,9 @@ class SignUpModal extends React.Component {
     const {dispatch} = this.props;
     dispatch(actions.startSignUpUser(values)).then(() => {
       if(this.props.auth.isAuth){
-        dispatch(actions.setRedirectUrl('/'));
-        hashHistory.push(this.props.redirectUrl);
+        dispatch(actions.setCurrentModal(null));
+        // dispatch(actions.setRedirectUrl('/'));
+        // hashHistory.push(this.props.redirectUrl);
       }
     });
   }
@@ -83,7 +90,7 @@ class SignUpModal extends React.Component {
       <fieldset>
 
         <div>
-          <input {...input} placeholder={label} type={type}/>
+          <input className="modal-input" {...input} placeholder={label} type={type}/>
           {touched && error && <div className="login-error">{error}</div>}
         </div>
       </fieldset>
@@ -102,7 +109,7 @@ class SignUpModal extends React.Component {
   }
 
   render () {
-    const {modalIsOpen} = this.state;
+    //const {modalIsOpen} = this.state;
 
     const customStyles = {
       content : {
@@ -119,10 +126,7 @@ class SignUpModal extends React.Component {
 
     return (
       <div>
-        <button className="signup-button" onClick={this.handleOpenModal}>Sign Up for a new account</button>
-        <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={this.handleCloseModal}>
-
-          <h4>Sign up for account</h4>
+        <Modal isOpen={true} style={customStyles} onRequestClose={this.handleCloseModal}>
 
           {this.renderAuthError()}
 
@@ -130,8 +134,7 @@ class SignUpModal extends React.Component {
             <Field name="email" component={this.renderField} type="text" label="Email"/>
             <Field name="password" component={this.renderField} type="password" label="Password"/>
             <Field name="passwordConfirmation" component={this.renderField} type="password" label="Password Confirmation"/>
-
-            <button type="submit" className="button expand">Sign Up</button>
+            <button type="submit" className="button expanded radius">Sign Up</button>
           </form>
         </Modal>
       </div>
@@ -144,3 +147,4 @@ export default connect(({redirectUrl, auth}) => ({redirectUrl, auth}))(reduxForm
   validate
 })(SignUpModal));
 //<label>{label}</label>
+//<h4 className="center-text-align">Sign up</h4>

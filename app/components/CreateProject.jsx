@@ -79,10 +79,10 @@ export var CreateProject = React.createClass({
       // }
       //
       // console.log('handleInputChange fileList', fileList);
-      var fileList = [...e.target.files];
+      //var fileList = [...e.target.files];
 
       this.setState({
-        fileList
+        fileList: [...e.target.files]
       });
     }else if(name === 'logoImage'){
       this.setState({

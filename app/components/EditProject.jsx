@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import FileList from 'FileList';
+import SimpleFileList from 'SimpleFileList';
 import * as actions from 'actions';
 
 class EditProject extends React.Component {
@@ -19,7 +20,8 @@ class EditProject extends React.Component {
 
     this.state = {
       ...currentProject,
-      filesSelection
+      filesSelection,
+      uploadFileList: []
     }
 
     this.handleSave = this.handleSave.bind(this);
@@ -30,17 +32,18 @@ class EditProject extends React.Component {
   handleSave (e) {
     e.preventDefault();
 
-    var {id, title, description} = this.state;
-    var fileList = $.extend(true, [], this.refs.fileUploader.files);
+    var {id, title, description, uploadFileList} = this.state;
+    //var fileList = $.extend(true, [], this.refs.fileUploader.files);
 
     if(title && description){
-      this.refs.fileUploader.value='';
+      //this.refs.fileUploader.value='';
       //console.log('title:', title);
       var {dispatch} = this.props;
-      dispatch(actions.startUpdateProject(id, title, description, fileList)).then(() => {
-        const {currentProject} = this.props;
+      dispatch(actions.startUpdateProject(id, title, description, uploadFileList)).then(() => {
+        // const {currentProject} = this.props;
         this.setState({
-          ...currentProject
+          //...this.props.currentProject,
+          uploadFileList: []
         });
       });
 
@@ -61,15 +64,24 @@ class EditProject extends React.Component {
 
     //var title = this.refs.title.value;
     var name = e.target.name;
-    this.setState({
-      [name]: e.target.value
-    });
+
+    if(name === 'fileUploader'){
+      this.setState({
+        uploadFileList: [...e.target.files]
+      });
+    }else{
+      this.setState({
+        [name]: e.target.value
+      });
+    }
     //console.log(name, ':', e.target.value);
   }
 
   render () {
 
-    var {title, description, createdAt, id, files, filesSelection} = this.state;
+    const {title, description, createdAt, id, files, filesSelection} = this.state;
+
+    const renderUploadFileList = this.state.uploadFileList ? <SimpleFileList fileList={[...this.state.uploadFileList]}/> : null;
 
     return (
       <div className="edit-project">
@@ -99,9 +111,10 @@ class EditProject extends React.Component {
             <div className="row">
               <div className="column small-offset-9 small-3 right-text-align">
                 <label htmlFor="fileUploader" className="button tiny radius">Upload</label>
-                <input type="file" id="fileUploader" name="fileUploader" ref="fileUploader" multiple="multiple" className={"show-for-sr"}/>
+                <input type="file" id="fileUploader" name="fileUploader" ref="fileUploader" multiple="multiple" className={"show-for-sr"} onChange={this.handleInputChange}/>
               </div>
             </div>
+            {renderUploadFileList}
           </div>
         </div>
         <div className="row control-bar">

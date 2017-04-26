@@ -1,5 +1,33 @@
 import moment from 'moment';
 
+/* Note that myFile is an object that contains file DOM object and progress variable*/
+export var fileUploadListReducer = (state = [], action) => {
+  switch(action.type){
+    case 'SET_FILE_UPLOAD_LIST':
+      return action.fileList;
+    case 'UPDATE_FILE_UPLOAD_PROGRESS':
+      return state.map((myFile) => {
+        if(myFile.file.name === action.name){
+          return {
+            file: myFile.file,
+            progress: action.progress
+          }
+        }else{
+          return myFile;
+        }
+      });
+    case 'DELETE_FILE_FROM_UPLOAD_LIST':
+      return state.filter((myFile) => {
+        return myFile.file.name !== action.name;
+        // if(myFile.file.name !== action.name){
+        //   return myFile
+        // }
+      });
+    default:
+      return state
+  }
+}
+
 export var projectReducer = (state = [], action) => {
   switch(action.type){
     case 'ADD_PROJECT':

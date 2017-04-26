@@ -204,13 +204,6 @@ export var addProject = (project) => {
   }
 }
 
-export var updateProject = (project) => {
-  return {
-    type: 'UPDATE_PROJECT',
-    project
-  }
-}
-
 export var deleteFile = (projectId, fileId) => {
   return {
     type: 'DELETE_FILE',
@@ -239,40 +232,88 @@ export var startUpdateFileSelection = (projedtId, fileId, isSelected) => {
   }
 }
 
+export const setFileUploadList = (fileList) => {
+  return {
+    type: 'SET_FILE_UPLOAD_LIST',
+    fileList
+  }
+}
+
+export const updateFileUploadProgress = (name, progress) => {
+  return {
+    type: 'UPDATE_FILE_UPLOAD_PROGRESS',
+    name,
+    progress
+  }
+}
+
+export const deleteFileFromUploadList = (name) => {
+  return {
+    type: 'DELETE_FILE_FROM_UPLOAD_LIST',
+    name
+  }
+}
+
+export var updateProject = (project) => {
+  return {
+    type: 'UPDATE_PROJECT',
+    project
+  }
+}
+
 export var startUpdateProject = (id, title, description, fileList) => {
   return (dispatch, getState) => {
 
     var project = {
+      id,
       title,
       description
     }
 
-    var myFiles = [];
-    var fileInfo = {};
+    // var myFiles = [];
+    // let fileInfo = {};
     var projectRef = firebaseRef.child('projects/' + id);
 
     return projectRef.update(project).then((snapshot) => {
       var seq = Promise.resolve();
 
-      console.log('fileList inside actions:', fileList);
+      //console.log('fileList inside actions:', fileList);
 
-      fileList.forEach((myFile) => {
+      fileList.forEach(({file}) => {
+        const fileInfo = {
+          name: file.name
+        };
+
         seq = seq.then(() => {
-          console.log('file name:', myFile.name, 'File:', myFile);
-          return firebaseStorageRef.child(id + '/' + myFile.name).put(myFile);
+          console.log('file name:', file.name, 'File:', file);
+          const uploadTask = firebaseStorageRef.child(id + '/' + file.name).put(file);
+          uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, (snapshot) => {
+            console.log('bytesTransfered:', snapshot.bytesTransferred);
+            console.log('totalBytes:', snapshot.totalBytes);
+
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            dispatch(updateFileUploadProgress(file.name, progress));
+            console.log('progress:', progress);
+          });
+          return uploadTask;
         }).then((snapshot) => {
-          fileInfo = {name: myFile.name, url: snapshot.downloadURL};
+          fileInfo.url = snapshot.downloadURL;
           return projectRef.child('files').push(fileInfo);
         }).then((snapshot) => {
+          fileInfo.id = snapshot.key;
+          dispatch(updateProject({...project, files: [fileInfo]}));
+          dispatch(deleteFileFromUploadList(file.name));
           //console.log('snapshot.key:', snapshot.key)
-          myFiles.push({...fileInfo, id: snapshot.key})
+          //myFiles.push({...fileInfo, id: snapshot.key})
         });
       });
 
-      return seq.then(() => {
-        console.log('myFiles:', myFiles);
-        dispatch(updateProject({...project, id, files: myFiles}));
-      });
+      return seq;
+
+      // return seq.then(() => {
+      //   console.log('myFiles:', myFiles);
+      //   dispatch(updateProject({...project, id, files: myFiles}));
+      // });
     });
   }
 }

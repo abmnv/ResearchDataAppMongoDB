@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import ProgressButton from 'react-progress-button';
 
 import FileList from 'FileList';
 import SimpleFileList from 'SimpleFileList';
@@ -21,7 +22,7 @@ class EditProject extends React.Component {
     this.state = {
       ...currentProject,
       filesSelection,
-      uploadFileList: []
+      buttonStatus: ''
     }
 
     this.handleSave = this.handleSave.bind(this);
@@ -32,19 +33,35 @@ class EditProject extends React.Component {
   handleSave (e) {
     e.preventDefault();
 
-    var {id, title, description, uploadFileList} = this.state;
+    const {id, title, description} = this.state;
+    const {uploadFileList} = this.props;
     //var fileList = $.extend(true, [], this.refs.fileUploader.files);
 
     if(title && description){
       //this.refs.fileUploader.value='';
       //console.log('title:', title);
+      this.setState({
+        buttonStatus: 'loading'
+      });
+
       var {dispatch} = this.props;
       dispatch(actions.startUpdateProject(id, title, description, uploadFileList)).then(() => {
         // const {currentProject} = this.props;
+        //dispatch(actions.setFileUploadList([]));
+
         this.setState({
-          //...this.props.currentProject,
-          uploadFileList: []
+          buttonStatus: 'success'
         });
+
+        // setTimeout(() => {
+        //   this.setState({
+        //     buttonStatus: ''
+        //   });
+        // }, 1100);
+        // this.setState({
+        //   //...this.props.currentProject,
+        //   uploadFileList: []
+        // });
       });
 
       // .then(() => {
@@ -62,13 +79,22 @@ class EditProject extends React.Component {
   handleInputChange (e) {
     e.preventDefault();
 
+    const {dispatch} = this.props;
+
     //var title = this.refs.title.value;
     var name = e.target.name;
 
     if(name === 'fileUploader'){
-      this.setState({
-        uploadFileList: [...e.target.files]
+      const fileList = [...e.target.files].map((file) => {
+        return {
+          file,
+          progress: 0
+        }
       });
+      dispatch(actions.setFileUploadList(fileList));
+      // this.setState({
+      //   uploadFileList: [...e.target.files]
+      // });
     }else{
       this.setState({
         [name]: e.target.value
@@ -81,7 +107,9 @@ class EditProject extends React.Component {
 
     const {title, description, createdAt, id, files, filesSelection} = this.state;
 
-    const renderUploadFileList = this.state.uploadFileList ? <SimpleFileList fileList={[...this.state.uploadFileList]}/> : null;
+    const renderUploadFileList = <SimpleFileList fileList={this.props.uploadFileList}/>;
+    //const renderUploadFileList = this.props.uploadFileList ? <SimpleFileList fileList={[...this.props.uploadFileList]} fileUploadProgress={this.props.fileUploadProgress}/> : null;
+    //const renderUploadFileList = this.state.uploadFileList ? <SimpleFileList fileList={[...this.state.uploadFileList]} fileUploadProgress={this.props.fileUploadProgress}/> : null;
 
     return (
       <div className="edit-project">
@@ -110,16 +138,16 @@ class EditProject extends React.Component {
           <div className="column small-9">
             <div className="row">
               <div className="column small-offset-9 small-3 right-text-align">
-                <label htmlFor="fileUploader" className="button tiny radius">Upload</label>
+                <label htmlFor="fileUploader" className="button tiny radius">Select</label>
                 <input type="file" id="fileUploader" name="fileUploader" ref="fileUploader" multiple="multiple" className={"show-for-sr"} onChange={this.handleInputChange}/>
               </div>
             </div>
             {renderUploadFileList}
           </div>
         </div>
-        <div className="row control-bar">
-          <div className="column small-4 small-offset-8">
-            <button className="button expanded radius" onClick={this.handleSave}>Save</button>
+        <div className="edit-save-button-container">
+          <div className="edit-save-button">
+            <ProgressButton onClick={this.handleSave} state={this.state.buttonStatus} durationSuccess={1000}>Save</ProgressButton>
           </div>
         </div>
       </div>
@@ -128,7 +156,7 @@ class EditProject extends React.Component {
 };
 
 export default connect((state, ownProps) => {
-  const {projects} = state;
+  const {projects, fileUploadProgress, uploadFileList} = state;
   let currentProject;
 
   const {params: {projectId}} = ownProps;
@@ -140,7 +168,13 @@ export default connect((state, ownProps) => {
     }
   });
 
-  return {currentProject};
+  return {currentProject, fileUploadProgress, uploadFileList};
 })(EditProject);
 // <label htmlFor="fileUploader" className="column small-3">Attach Files:</label>
-//
+// <button className="button expanded radius" onClick={this.handleSave}>Save</button>
+
+// <div className="row control-bar">
+//   <div className="column small-4 small-offset-8">
+//     <ProgressButton onClick={this.handleSave} state={this.state.buttonStatus} durationSuccess={1000}>Save</ProgressButton>
+//   </div>
+// </div>

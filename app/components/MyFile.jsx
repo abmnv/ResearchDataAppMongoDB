@@ -1,16 +1,31 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import ProgressButton from 'react-progress-button';
 
 import * as actions from 'actions';
 
 var MyFile = React.createClass({
 
+  getInitialState () {
+    return {
+      buttonStatus: ''
+    }
+  },
+
   handleDeleteFile (e) {
     e.preventDefault();
 
+    this.setState({
+      buttonStatus: 'loading'
+    });
+
     const {id, name, projectId, dispatch} = this.props;
     console.log('projectId:', projectId);
-    dispatch(actions.startDeleteFile(projectId, id, name));
+    dispatch(actions.startDeleteFile(projectId, id, name)).then(() => {
+      // this.setState({
+      //   buttonStatus: 'success'
+      // });
+    });
   },
 
   // handleToggleFileSelection (isSelected) {
@@ -39,7 +54,11 @@ var MyFile = React.createClass({
               {name}
             </div>
             <div className="column small-3 right-text-align">
-              <button className="button tiny alert radius" onClick={this.handleDeleteFile}>Delete</button>
+              <div className="edit-delete-file-button-container">
+                <div className="edit-delete-file-button">
+                  <ProgressButton classNamespace='pb-delete-' onClick={this.handleDeleteFile} state={this.state.buttonStatus} durationSuccess={1000}>Delete</ProgressButton>
+                </div>
+              </div>
             </div>
           </div>
         )
@@ -84,3 +103,4 @@ var MyFile = React.createClass({
 });
 
 export default connect()(MyFile);
+//<button className="button tiny alert radius" onClick={this.handleDeleteFile}>Delete</button>

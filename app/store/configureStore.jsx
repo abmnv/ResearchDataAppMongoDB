@@ -16,7 +16,9 @@ export var configure = () => {
     //isLoggedIn: reducers.setLoginStatus,
     redirectUrl: reducers.setRedirectUrl,
     form: formReducer,
-    currentModal: reducers.modalReducer
+    currentModal: reducers.modalReducer,
+    uploadFileList: reducers.fileUploadListReducer
+    //fileUploadProgress: reducers.fileUploadProgressReducer
   });
 
   var store = redux.createStore(reducer, redux.compose(

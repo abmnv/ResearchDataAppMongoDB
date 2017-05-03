@@ -1,5 +1,6 @@
 import firebase, {firebaseRef, firebaseStorageRef, githubProvider} from 'app/firebase/';
 import moment from 'moment';
+import * as dataAPI from 'ResearchDataAPI';
 
 const DEFAULT_IMAGE_URL =  'https://firebasestorage.googleapis.com/v0/b/research-data-app.appspot.com/o/icons%2Fdefault-project.png?alt=media&token=a16a1fa3-df80-4c28-becf-562ff9a61d13';
 
@@ -162,6 +163,16 @@ export var startDeleteProject = (id, files) => {
     });
   }
 }
+
+export var startAddProjects = () => {
+
+  return (dispatch, getState) => {
+    dispatch(setLoadingStatus(true));
+
+
+  }
+}
+
 
 export var startAddProjects = () => {
 

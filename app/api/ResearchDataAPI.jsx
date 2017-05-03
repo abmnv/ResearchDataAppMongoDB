@@ -9,3 +9,11 @@ export const getFileBlob = (file) => {
     throw new Error(err);
   });
 }
+
+export const getProjects = () => {
+  return axios.get('/projects').then((response) => {
+    return response.data;
+  }).catch((err) => {
+    throw new Error(err);
+  });
+}

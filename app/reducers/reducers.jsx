@@ -1,12 +1,13 @@
 import moment from 'moment';
 
-/* Note that myFile is an object that contains file DOM object and progress variable*/
+// Note that myFile is an object that contains file DOM object and progress variable
 export var fileUploadListReducer = (state = [], action) => {
   switch(action.type){
     case 'SET_FILE_UPLOAD_LIST':
       return action.fileList;
     case 'UPDATE_FILE_UPLOAD_PROGRESS':
       return state.map((myFile) => {
+        //Note that I can't use file id because it is not in the database yet
         if(myFile.file.name === action.name){
           return {
             file: myFile.file,
@@ -24,7 +25,35 @@ export var fileUploadListReducer = (state = [], action) => {
         // }
       });
     default:
-      return state
+      return state;
+  }
+}
+
+const initState = {
+  title: null,
+  description: null,
+  fileList: [],
+  logoImage: null
+}
+
+export var createProjectFormReducer = (state = initState, action) => {
+  switch(action.type){
+    case 'SET_CREATE_PROJECT_FILE_UPLOAD_LIST':
+      const {fileList} = action;
+      return {
+        ...state,
+        fileList
+      }
+    case 'SET_CREATE_PROJECT_LOGO_IMAGE':
+      const {logoImage} = action;
+      return {
+        ...state,
+        logoImage
+      }
+    case 'CLEAR_CREATE_PROJECT_FORM':
+      return initState
+    default:
+      return state;
   }
 }
 
@@ -45,9 +74,10 @@ export var projectReducer = (state = [], action) => {
         if(project.id === action.project.id){
           var files = [
             ...project.files,
-            ...action.project.files
+            ...(action.project.files || [])
           ]
           return {...project, ...action.project, files}
+          //return action.project;
         }else{
           return project
         }

@@ -17,7 +17,8 @@ export var configure = () => {
     redirectUrl: reducers.setRedirectUrl,
     form: formReducer,
     currentModal: reducers.modalReducer,
-    uploadFileList: reducers.fileUploadListReducer
+    uploadFileList: reducers.fileUploadListReducer,
+    createProjectForm: reducers.createProjectFormReducer 
     //fileUploadProgress: reducers.fileUploadProgressReducer
   });
 

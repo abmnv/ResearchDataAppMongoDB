@@ -3,8 +3,6 @@ import {connect} from 'react-redux';
 import * as actions from 'actions';
 import ProgressButton from 'react-progress-button';
 
-//import 'style-loader!css-loader!../../node_modules/react-progress-button/react-progress-button.css';
-
 import SimpleFileList from 'SimpleFileList';
 
 export var CreateProject = React.createClass({
@@ -13,8 +11,6 @@ export var CreateProject = React.createClass({
     return {
       title: '',
       description: '',
-      fileList: null,
-      logoImage: null,
       buttonStatus: 'disabled',
     }
   },
@@ -22,10 +18,8 @@ export var CreateProject = React.createClass({
   handleCreateProject (e) {
     e.preventDefault();
 
-    const title = this.state.title;
-    const description = this.state.description;
-    const fileList = this.state.fileList;
-    const logoImage = this.state.logoImage;
+    const {title, description} = this.state;
+    const {fileList, logoImage} = this.props;
 
     if(title && description){
       const {dispatch} = this.props;
@@ -38,14 +32,14 @@ export var CreateProject = React.createClass({
         buttonStatus: 'loading'
       });
 
-      dispatch(actions.startAddProject(title, description, logoImage, fileList)).then(() => {
+      dispatch(actions.startCreateProject(title, description, logoImage, fileList)).then(() => {
         this.setState({
           title: '',
           description: '',
-          fileList: null,
-          logoImage: null,
           buttonStatus: 'success',
         });
+
+        dispatch(actions.clearCreateProjectForm());
 
         setTimeout(() => {
           this.setState({
@@ -72,22 +66,21 @@ export var CreateProject = React.createClass({
     const name = e.target.name;
 
     if(name === 'fileUploader'){
-      // let fileList = [];
-      //
-      // for(let i=0; i<e.target.files.length; i++){
-      //   fileList.push(e.target.files[i].name);
-      // }
-      //
-      // console.log('handleInputChange fileList', fileList);
-      //var fileList = [...e.target.files];
+      const {dispatch} = this.props;
 
-      this.setState({
-        fileList: [...e.target.files]
+      const fileList = [...e.target.files].map((file) => {
+        return {
+          file,
+          progress: 0
+        }
       });
+      dispatch(actions.setCreateProjectFileUploadList(fileList));
+
     }else if(name === 'logoImage'){
-      this.setState({
-        [name]: e.target.files[0]
-      });
+      dispatch(actions.setCreateProjectLogoImage(e.target.files[0]));
+      // this.setState({
+      //   [name]: e.target.files[0]
+      // });
     }else{
       this.setState({
         [name]: e.target.value,
@@ -102,9 +95,13 @@ export var CreateProject = React.createClass({
   },
 
   render () {
+    const {fileList, logoImage} = this.props;
+    console.log('fileList:', fileList);
+    console.log('logoImage:', logoImage);
 
-    const renderFileList = this.state.fileList ? <SimpleFileList fileList={this.state.fileList}/> : null;
-    const renderLogoImage = this.state.logoImage ? <div>{this.state.logoImage.name}</div> : null;
+    const renderUploadFileList = <SimpleFileList fileList={fileList}/>;
+    //const renderFileList = this.state.fileList ? <SimpleFileList fileList={this.state.fileList}/> : null;
+    const renderLogoImage = logoImage ? (<SimpleFileList fileList={[logoImage]}/>) : null;
     // console.log('fileListRender:', fileListRender);
 
     return (
@@ -146,7 +143,7 @@ export var CreateProject = React.createClass({
             <input type="file" id="fileUploader" name="fileUploader" ref="fileUploader" multiple="multiple" className="show-for-sr" onChange={this.handleInputChange}></input>
           </div>
           <div className="column small-7">
-            {renderFileList}
+            {renderUploadFileList}
           </div>
         </div>
         <div className="row control-bar">
@@ -159,6 +156,6 @@ export var CreateProject = React.createClass({
   }
 });
 
-export default connect()(CreateProject);
+export default connect(({createProjectForm}) => ({...createProjectForm}))(CreateProject);
 //<SimpleFileList fileList={this.state.fileList}/>
 //<button  className="button expanded" onClick={this.handleCreateProject}>Create</button>

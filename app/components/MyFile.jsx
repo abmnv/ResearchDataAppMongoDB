@@ -20,7 +20,7 @@ var MyFile = React.createClass({
     });
 
     const {id, name, projectId, dispatch} = this.props;
-    console.log('projectId:', projectId);
+    //console.log('projectId:', projectId);
     dispatch(actions.startDeleteFile(projectId, id, name)).then(() => {
       // this.setState({
       //   buttonStatus: 'success'
@@ -46,6 +46,10 @@ var MyFile = React.createClass({
     //console.log('MyFile editModeStatus:', editModeStatus);
     //sconsole.log('isSelected:', isSelected);
 
+    //Note that I need to build a dynamic URL because static doesn't support file renaming for downloads
+    const newUrl = `/projects/${projectId}/files/${id}`;
+    //console.log('MyFile url:', newUrl);
+
     const renderFile = () => {
       if(editModeStatus){
         return (
@@ -69,7 +73,7 @@ var MyFile = React.createClass({
               {name}
             </div>
             <div className="column small-3 right-text-align">
-              <a href={url} className="button tiny success radius">Download</a>
+              <a href={newUrl} className="button tiny success radius">Download</a>
             </div>
             <div className="column small-1">
               <input type="checkbox" checked={isSelected} onChange={() => {

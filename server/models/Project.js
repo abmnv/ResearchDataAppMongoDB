@@ -9,7 +9,7 @@ const FileSchema = new Schema({
     required: true,
     minlength: 1
   },
-  path: {
+  url: {
     type: String,
     required: true,
     minlength: 1
@@ -22,16 +22,27 @@ const FileSchema = new Schema({
 
 });
 
+FileSchema.method('toClient', function(){
+  const obj = this.toObject();
+
+  obj.id = obj._id;
+  delete obj._id;
+
+  delete obj.projectId;
+
+  return obj;
+});
+
 FileSchema.pre('save', function (next) {
 
   if(this.isNew) {
-    const newPath = `./public/data/${this.projectId}/${this.name}`;
+    //const newPath = `./public/data/${this.projectId}/${this.name}`;
 
     fsp.mkdirp(`./public/data/${this.projectId}`).then(() => {
     //   console.log('created dir:', `./public/${projectId}`);
-      return fsp.rename(this.path, newPath);
+      return fsp.rename(this.url, `./public/data/${this.projectId}/${this._id}`);
     }).then(() => {
-      this.path = newPath;
+      this.url = `/data/${this.projectId}/${this._id}`;
       next();
     }).catch((err) => {
       next(new Error(err));
@@ -40,6 +51,31 @@ FileSchema.pre('save', function (next) {
     next();
   }
 });
+
+//pre remove hook didn't work with callback functions.
+FileSchema.post('remove', function(doc) {
+  fsp.remove(`./public${doc.url}`).then(() => {
+    console.log('removed file:', `./public${doc.url}`);
+  }).catch((err) => {
+    console.log('Error File post remove', err);
+  });
+});
+
+// FileSchema.pre('remove', function(next) {
+//
+//   setTimeout(function () {
+//       console.log('mock removed file:', `./public${this.url}`);
+//     next();
+//   }, 1000);
+//   // fsp.remove(`./public${this.url}`).then(() => {
+//   //   console.log('removed file:', `./public${this.url}`);
+//   //   next();
+//   // }).catch((err) => {
+//   //   console.log('Error File pre remove', err);
+//   //   next(new Error(err));
+//   // });
+// })
+
 
 const ProjectSchema = new Schema({
   title: {
@@ -58,13 +94,13 @@ const ProjectSchema = new Schema({
     type: Number,
     required: true
   },
-  logo: {
+  logoImage: {
     name: {
       type: String,
       required: false,
       // minlength: 0
     },
-    path: {
+    url: {
       type: String,
       required: false,
       // minlength: 0
@@ -73,26 +109,50 @@ const ProjectSchema = new Schema({
   files: [FileSchema]
 });
 
+ProjectSchema.method('toClient', function() {
+  //console.log('ProjectSchema.method this:', this);
+  const obj = this.toObject();
+
+  obj.id = obj._id;
+  delete obj._id;
+
+  delete obj.__v;
+
+  const newFiles = obj.files.map((file) => {
+    file.id = file._id;
+    delete file._id;
+
+    delete file.projectId;
+
+    return file;
+  });
+
+  obj.files = newFiles;
+
+  //console.log('ProjectSchema.method obj:', obj);
+  return obj;
+});
+
 ProjectSchema.pre('save', function(next) {
   if(this.isNew) {
     // console.log('inside pre save');
     // console.log('this:', this);
 
-    if(this.logo.name){
-      const newPath = `./public/data/${this._id}/${this.logo.name}`;
+    if(this.logoImage.name){
+      //const newPath = `./public/data/${this._id}/${this.logo.name}`;
       fsp.mkdirp(`./public/data/${this._id}`).then(() => {
       //   console.log('created dir:', `./public/${projectId}`);
-        return fsp.rename(this.logo.path, newPath);
+        return fsp.rename(this.logoImage.url, `./public/data/${this._id}/${this.logoImage.name}`);
       }).then(() => {
-        this.logo.path = newPath;
+        this.logoImage.url = `/data/${this._id}/${this.logoImage.name}`;
         next();
       }).catch((err) => {
         next(new Error(err));
       });
     }else{
-      this.logo = {
+      this.logoImage = {
         name: 'default-project.png',
-        path: './public/images/default-project.png'
+        url: '/images/default-project.png'
       }
       next();
     }
@@ -101,6 +161,15 @@ ProjectSchema.pre('save', function(next) {
   }
 });
 
-const Project = mongoose.model('Project', ProjectSchema)
+ProjectSchema.pre('remove', function(next) {
+  fsp.remove(`./public/data/${this._id}`).then(() => {
+    console.log('Remove directory:', `./public/data/${this._id}`);
+    next();
+  }).catch((err) => {
+    next(new Error(err));
+  });
+})
 
-module.exports = {Project}
+const Project = mongoose.model('Project', ProjectSchema);
+
+module.exports = {Project};

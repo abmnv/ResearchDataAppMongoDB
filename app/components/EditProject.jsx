@@ -114,7 +114,7 @@ class EditProject extends React.Component {
     return (
       <div className="edit-project">
         <div className="row">
-          <label htmlhtmlFor="title" className="column small-3 project-label">Title:</label>
+          <label htmlFor="title" className="column small-3 project-label">Title:</label>
           <div className="column small-9">
             <input type="text" name="title" onChange={this.handleInputChange} value={this.state.title}></input>
           </div>

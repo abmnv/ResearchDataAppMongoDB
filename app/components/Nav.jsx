@@ -31,7 +31,6 @@ class Nav extends React.Component {
     //console.log('Search text:', searchText);
 
     dispatch(actions.setSearchText(searchText));
-
   }
 
   handleLogout (e) {
@@ -39,8 +38,9 @@ class Nav extends React.Component {
 
     const {dispatch} = this.props;
 
-    dispatch(actions.startLogout());
-    hashHistory.push('/');
+    dispatch(actions.startLogout()).then(() => {
+      hashHistory.push('/');
+    });
   }
 
   render () {

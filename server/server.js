@@ -8,7 +8,16 @@ const bcrypt = require('bcryptjs');
 const {mongoose} = require('./db/mongoose');
 const {Project} = require('./models/Project');
 const {User} = require('./models/User');
-const {authenticate} = require('./middleware/authenticate');
+const {authenticate, authAdmin} = require('./middleware/authenticate');
+
+var path = require('path');
+var env = require('node-env-file');
+
+try {
+  env('.env');
+} catch(err) {
+  console.log('Problem importing env file, ', err);
+}
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,35 +25,32 @@ app.use(bodyParser.json());
 const upload = multer({dest: './uploads/'});
 
 app.get('/projects', (req, res) => {
-  Project.find({}, (err, docs) => {
-    if(err) {
-      res.status(400).send(err);
-    }else{
-      const newDocs = docs.map((doc) => {
-        return doc.toClient();
-      });
-      res.send(newDocs);
-    }
+  Project.find({}).then((docs) => {
+    res.send(docs);
+  }).catch((err) => {
+    res.status(400).send(err);
   });
 });
 
-app.get('/projects/:projectId/files/:fileId', (req, res) => {
+app.get('/projects/:projectId/files/:fileId', authenticate, (req, res) => {
   const projectId = req.params.projectId;
   const fileId = req.params.fileId;
 
   Project.findById(projectId).then((project) => {
 
     if(!project){
-      throw new Error('NotFound');
+      return Promise.reject('NotFound');
+      //throw new Error('NotFound');
       //return new res.status(404).send();
     }
     //myProject = project;
-    console.log('project:', project);
+    //console.log('project:', project);
 
     const doc = project.files.id(fileId);
-    console.log('inside findById doc:', doc);
+    //console.log('inside findById doc:', doc);
     if(!doc){
-      throw new Error('NotFound');
+      return Promise.reject('NotFound');
+      //throw new Error('NotFound');
     }
 
     const path = './public' + doc.url;
@@ -58,7 +64,7 @@ app.get('/projects/:projectId/files/:fileId', (req, res) => {
   });
 });
 
-app.post('/projects/:projectId/files', upload.single('dataFiles'), (req, res) => {
+app.post('/projects/:projectId/files', authenticate, authAdmin, upload.single('dataFiles'), (req, res) => {
   const projectId = req.params.projectId;
 
   if(!req.file){
@@ -86,7 +92,7 @@ app.post('/projects/:projectId/files', upload.single('dataFiles'), (req, res) =>
   })
 });
 
-app.delete('/projects/:projectId/files/:fileId', (req, res) => {
+app.delete('/projects/:projectId/files/:fileId', authenticate, authAdmin, (req, res) => {
   const projectId = req.params.projectId;
   const fileId = req.params.fileId;
   //let fileDoc;
@@ -121,7 +127,7 @@ app.delete('/projects/:projectId/files/:fileId', (req, res) => {
   });
 });
 
-app.patch('/projects/:projectId', upload.array('dataFiles', 20), (req, res) => {
+app.patch('/projects/:projectId', authenticate, authAdmin, upload.array('dataFiles', 20), (req, res) => {
   //console.log('req.body:', req.body);
   const projectId = req.params.projectId;
   const body = _.pick(req.body, ['title', 'description']);
@@ -163,7 +169,7 @@ app.patch('/projects/:projectId', upload.array('dataFiles', 20), (req, res) => {
 });
 
 
-app.delete('/projects/:projectId', (req, res) => {
+app.delete('/projects/:projectId', authenticate, authAdmin, (req, res) => {
   //console.log('projectId:', req.params.projectId);
   Project.findByIdAndRemove(req.params.projectId).then((doc) => {
     //console.log('doc:', doc);
@@ -180,7 +186,7 @@ app.delete('/projects/:projectId', (req, res) => {
 });
 
 
-app.post('/projects', upload.fields([{
+app.post('/projects', authenticate, authAdmin, upload.fields([{
   name: 'dataFiles',
   maxCount: 50
 }, {
@@ -222,7 +228,7 @@ app.post('/projects', upload.fields([{
   });
 });
 
-app.get('/users', (req, res) => {
+app.get('/users', authenticate, authAdmin, (req, res) => {
   User.find({}).then((docs) => {
     res.send(docs);
   }).catch((err) => {
@@ -242,7 +248,12 @@ app.post('/users', (req, res) => {
   }).then((token) => {
     res.header('x-auth', token).send(user);
   }).catch((err) => {
-    res.status(400).send(err);
+    //console.log('post err:', err);
+    if(err.name = 'MongoError' && err.code === 11000){
+      res.status(400).send({message: 'This email address is already used!'});
+    }else{
+      res.status(400).send(err);
+    }
   });
 });
 
@@ -252,8 +263,18 @@ app.post('/users/login', (req, res) => {
   User.findByCredentials(body.email, body.password).then((user) => {
     return user.genAuthToken().then((token) => {
       res.header('x-auth', token).send(user);
-    });    
+    });
   }).catch((err) => {
+    res.status(400).send({message: err});
+  });
+});
+
+app.delete('/users/me/token', authenticate, (req, res) => {
+  const user = req.user;
+
+  user.deleteToken(req.token).then(() => {
+    res.send();
+  }).catch(() => {
     res.status(400).send();
   });
 });

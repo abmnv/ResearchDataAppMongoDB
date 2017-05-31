@@ -1,4 +1,4 @@
-import firebase, {firebaseRef, firebaseStorageRef, githubProvider} from 'app/firebase/';
+//import firebase, {firebaseRef, firebaseStorageRef, githubProvider} from 'app/firebase/';
 import moment from 'moment';
 import * as dbAPI from 'ResearchDataAPI';
 
@@ -47,10 +47,10 @@ export const authError = (error) => {
   }
 }
 
-export const authUser = (role) => {
+export const authUser = (token) => {
   return {
     type: 'AUTH_USER',
-    role
+    token
   }
 }
 
@@ -61,30 +61,62 @@ export const setCurrentModal = (currentModal) => {
   }
 }
 
-export const startSignUpUser = (credentials) => {
+export const startSignUpUser = (email, password) => {
   return (dispatch, getState) => {
-    return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password).then((user) => {
-    //   console.log('user:', user);
-    //   return firebaseRef.child(`users/${user.uid}`).set({role: 'user'});
-    // }).then(() => {
-      dispatch(authUser('user'));
+    return dbAPI.signUp(email, password).then((user) => {
+      console.log('startSignUpUser user:', user);
+      dispatch(authUser(user.token));
+      localStorage.setItem('researchDataAppToken', user.token);
     }).catch((err) => {
-      dispatch(authError(err.message));
+      console.log('startSignUpUser error:', err);
+      dispatch(authError(err));
+      return Promise.reject();
     });
+  }
+  // return (dispatch, getState) => {
+  //   return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password).then((user) => {
+  //   //   console.log('user:', user);
+  //   //   return firebaseRef.child(`users/${user.uid}`).set({role: 'user'});
+  //   // }).then(() => {
+  //     dispatch(authUser('user'));
+  //   }).catch((err) => {
+  //     dispatch(authError(err.message));
+  //   });
+  // }
+}
+
+export const verifyAuth = () => {
+  return (dispatch, getState) => {
+    const token = localStorage.getItem('researchDataAppToken');
+    console.log('verifyAuth token:', token);
+    if(token){
+      dispatch(authUser(token));
+    }
   }
 }
 
-export const startEmailPasswordLogin = (credentials) => {
+export const startEmailPasswordLogin = (email, password) => {
+  console.log('email:', email);
+  console.log('password:', password);
   return (dispatch, getState) => {
-    return firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password).then((user) => {
-      return firebaseRef.child(`users/${user.uid}/role`).once('value');
-    }).then((snapshot) => {
-      console.log('user role', snapshot.val());
-      dispatch(authUser(snapshot.val()));
+    return dbAPI.login(email, password).then((user) => {
+      console.log('startEmailPasswordLogin user:', user);
+      dispatch(authUser(user.token));
+      localStorage.setItem('researchDataAppToken', user.token);
     }).catch((err) => {
-      //console.log('startEmailPasswordLogin:', err);
-      dispatch(authError(err.message));
+      console.log('startEmailPasswordLogin error:', err);
+      dispatch(authError(err));
     });
+
+    // return firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password).then((user) => {
+    //   return firebaseRef.child(`users/${user.uid}/role`).once('value');
+    // }).then((snapshot) => {
+    //   console.log('user role', snapshot.val());
+    //   dispatch(authUser(snapshot.val()));
+    // }).catch((err) => {
+    //   //console.log('startEmailPasswordLogin:', err);
+    //   dispatch(authError(err.message));
+    // });
   }
 }
 
@@ -108,18 +140,27 @@ export var startGithubLogin = () => {
 
 export var logout = () => {
   return {
-    type: 'LOG_OUT',
+    type: 'LOGOUT',
   }
 }
 
 export var startLogout = () => {
   return (dispatch, getState) => {
-    return firebase.auth().signOut().then(() => {
+    const {auth: {token}} = getState();
+    return dbAPI.logout(token).then(() => {
+      console.log('token was removed from MongoDB');
+      localStorage.removeItem('researchDataAppToken');
       dispatch(logout());
-      //console.log('Successfully logged out');
-    }).catch((e) => {
-      //console.log('Error while trying to log out', e);
-    });
+    }).catch((err) => {
+      console.log('Logout error:', err);
+    })
+
+    // return firebase.auth().signOut().then(() => {
+    //   dispatch(logout());
+    //   //console.log('Successfully logged out');
+    // }).catch((e) => {
+    //   //console.log('Error while trying to log out', e);
+    // });
   }
 }
 

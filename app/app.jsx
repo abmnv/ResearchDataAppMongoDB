@@ -18,6 +18,7 @@ var store = require('configureStore').configure();
 var state = store.getState();
 console.log('Init state:', state);
 
+store.dispatch(actions.verifyAuth());
 store.dispatch(actions.startAddProjects());
 
 // var store = require('configureStore').configure();

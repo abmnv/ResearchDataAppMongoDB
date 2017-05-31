@@ -53,7 +53,6 @@ class SignUpModal extends React.Component {
   }
 
   handleCloseModal () {
-
     const {dispatch} = this.props;
     dispatch(actions.setCurrentModal(null));
     hashHistory.push('/');
@@ -72,15 +71,13 @@ class SignUpModal extends React.Component {
     }
   }
 
-  handleSignUp = (values) => {
+  handleSignUp = ({email, password}) => {
     //console.log('handleEmailPasswordSubmit values:', values);
     const {dispatch} = this.props;
-    dispatch(actions.startSignUpUser(values)).then(() => {
-      if(this.props.auth.isAuth){
-        dispatch(actions.setCurrentModal(null));
-        // dispatch(actions.setRedirectUrl('/'));
-        // hashHistory.push(this.props.redirectUrl);
-      }
+    dispatch(actions.startSignUpUser(email, password)).then(() => {
+      dispatch(actions.setCurrentModal(null));
+      // dispatch(actions.setRedirectUrl('/'));
+      // hashHistory.push(this.props.redirectUrl);
     });
   }
 

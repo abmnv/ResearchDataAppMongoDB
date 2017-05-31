@@ -16,4 +16,12 @@ const authenticate = (req, res, next) => {
   });
 }
 
-module.exports = {authenticate};
+const authAdmin = (req, res, next) => {
+  if(!req.user.admin){
+    res.status(401).send('You don\'t have admin privilege');
+  }
+
+  next();
+}
+
+module.exports = {authenticate, authAdmin};

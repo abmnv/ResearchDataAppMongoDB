@@ -19,8 +19,17 @@ const FileSchema = new Schema({
     required: true,
     minlength: 1
   },
-
 });
+
+FileSchema.methods.toJSON = function() {
+  const userObj = this.toObject();
+
+  userObj.id = userObj._id;
+  delete userObj._id;
+  delete userObj.projectId;
+
+  return userObj;
+}
 
 FileSchema.method('toClient', function(){
   const obj = this.toObject();
@@ -108,6 +117,27 @@ const ProjectSchema = new Schema({
   },
   files: [FileSchema]
 });
+
+ProjectSchema.methods.toJSON = function() {
+  const projectObj = this.toObject();
+
+  projectObj.id = projectObj._id;
+  delete projectObj._id;
+  delete projectObj.__v;
+
+  const files = projectObj.files.map((file) => {
+    file.id = file._id;
+
+    delete file._id;
+    delete file.projectId;
+
+    return file;
+  });
+
+  projectObj.files = files;
+
+  return projectObj;
+}
 
 ProjectSchema.method('toClient', function() {
   //console.log('ProjectSchema.method this:', this);

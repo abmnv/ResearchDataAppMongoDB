@@ -22,6 +22,10 @@ const UserSchema = new Schema({
     required: true,
     minlength: 6
   },
+  admin: {
+    type: Boolean,
+    default: false
+  },
   tokens: [{
     access: {
       type: String,
@@ -39,15 +43,16 @@ UserSchema.statics.findByToken = function(token){
   let decoded;
 
   try {
-    decoded = jwt.verify(token, 'mySecret');
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
     return Promise.reject(err);
   }
 
   return User.findOne({
-    '_id': decoded._id,
+    '_id': decoded.id,
     'tokens.token': token,
-    'tokens.access': 'auth'
+    'tokens.access': decoded.access,
+    'admin': decoded.admin
   });
 }
 
@@ -56,14 +61,14 @@ UserSchema.statics.findByCredentials = function(email, password) {
 
   return User.findOne({email}).then((user) => {
     if(!user){
-      return Promise.reject();
+      return Promise.reject('Email is not found');
     }
 
     return bcrypt.compare(password, user.password).then((res) => {
       if(res){
         return user;
       }else{
-        return Promise.reject();
+        return Promise.reject('Password does not match');
       }
     });
   });
@@ -74,20 +79,39 @@ UserSchema.methods.toJSON = function() {
 
   //const userObj = user.toObject();
 
-  return {id: user._id, email: user.email}
+  return {id: user._id, email: user.email, admin: user.admin}
 }
 
 UserSchema.methods.genAuthToken = function() {
   const user = this;
 
   const access = 'auth';
-  const token = jwt.sign({_id: user._id.toHexString(), access}, 'mySecret').toString();
+
+  const token = jwt.sign({
+    id: user._id.toHexString(),
+    email: user.email,
+    admin: user.admin,
+    access
+  }, process.env.JWT_SECRET).toString();
+
   user.tokens.push({access, token});
 
   return user.save().then(() => {
     return token;
   });
 };
+
+UserSchema.methods.deleteToken = function(token) {
+  const user = this;
+
+  return user.update({
+    $pull: {
+      tokens: {
+        token
+      }
+    }
+  });
+}
 
 UserSchema.pre('save', function(next) {
   const user = this;

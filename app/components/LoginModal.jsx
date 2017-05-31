@@ -86,12 +86,10 @@ class LoginModal extends React.Component {
   handleEmailPasswordLogin = (values) => {
     console.log('handleEmailPasswordSubmit values:', values);
     const {dispatch} = this.props;
-    dispatch(actions.startEmailPasswordLogin(values)).then(() => {
-      if(this.props.auth.isAuth){
-        dispatch(actions.setCurrentModal(null));
-        // dispatch(actions.setRedirectUrl('/'));
-        // hashHistory.push(this.props.redirectUrl);
-      }
+    dispatch(actions.startEmailPasswordLogin(values.email, values.password)).then(() => {
+      dispatch(actions.setCurrentModal(null));
+      // dispatch(actions.setRedirectUrl('/'));
+      // hashHistory.push(this.props.redirectUrl);
     });
   }
 

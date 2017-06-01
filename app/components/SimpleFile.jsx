@@ -5,6 +5,7 @@ const SimpleFile = React.createClass({
 
   render () {
     const {myFile} = this.props;
+    console.log('myFile:', myFile);
     return (
       <div>
         {myFile.file.name}

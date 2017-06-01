@@ -19,10 +19,9 @@ export var CreateProject = React.createClass({
     e.preventDefault();
 
     const {title, description} = this.state;
-    const {fileList, logoImage} = this.props;
+    const {fileList, logoImage, dispatch} = this.props;
 
     if(title && description){
-      const {dispatch} = this.props;
       // this.refs.title.value = '';
       // this.refs.description.value = '';
       // this.refs.fileUploader.value = '';
@@ -41,6 +40,7 @@ export var CreateProject = React.createClass({
 
         dispatch(actions.clearCreateProjectForm());
 
+        //set button to disabled after about 1000 ms to avoid conflict with 1000ms to 'Ready' status transition
         setTimeout(() => {
           this.setState({
             buttonStatus: 'disabled',
@@ -59,6 +59,8 @@ export var CreateProject = React.createClass({
   handleInputChange (e) {
     e.preventDefault();
 
+    const {dispatch} = this.props;
+
     //const name = e.target.name;
     // console.log('files:', e.target.files);
     //const fileList = $.extend(true, [], e.target.files);
@@ -66,8 +68,6 @@ export var CreateProject = React.createClass({
     const name = e.target.name;
 
     if(name === 'fileUploader'){
-      const {dispatch} = this.props;
-
       const fileList = [...e.target.files].map((file) => {
         return {
           file,
@@ -77,20 +77,20 @@ export var CreateProject = React.createClass({
       dispatch(actions.setCreateProjectFileUploadList(fileList));
 
     }else if(name === 'logoImage'){
-      dispatch(actions.setCreateProjectLogoImage(e.target.files[0]));
+      dispatch(actions.setCreateProjectLogoImage({file: e.target.files[0], progress: 0}));
       // this.setState({
       //   [name]: e.target.files[0]
       // });
     }else{
       this.setState({
-        [name]: e.target.value,
+        [name]: e.target.value
+      }, () => {
+        if(this.state.title && this.state.description){
+          this.setState({
+            buttonStatus: ''
+          });
+        }
       });
-
-      if(this.state.title && this.state.description){
-        this.setState({
-          buttonStatus: ''
-        });
-      }
     }
   },
 
@@ -107,7 +107,7 @@ export var CreateProject = React.createClass({
     return (
       <div className="create-project">
         <div className="row">
-          <label htmlhtmlFor="title" className="column small-3 project-label">
+          <label htmlFor="title" className="column small-3 project-label">
             Title:
           </label>
           <div className="column small-9">
@@ -126,11 +126,11 @@ export var CreateProject = React.createClass({
           <p className="column small-3 project-label middle">
             Logo image:
           </p>
-          <div className="column small-3">
+          <div className="column small-2">
             <label htmlFor="logoImage" className="button tiny radius">Upload</label>
             <input type="file" id="logoImage" name="logoImage" className="show-for-sr" onChange={this.handleInputChange}></input>
           </div>
-          <div className="column small-6">
+          <div className="column small-7">
             {renderLogoImage}
           </div>
         </div>

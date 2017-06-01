@@ -73,11 +73,16 @@ class SignUpModal extends React.Component {
 
   handleSignUp = ({email, password}) => {
     //console.log('handleEmailPasswordSubmit values:', values);
-    const {dispatch} = this.props;
+    const {dispatch, change, untouch} = this.props;
     dispatch(actions.startSignUpUser(email, password)).then(() => {
       dispatch(actions.setCurrentModal(null));
       // dispatch(actions.setRedirectUrl('/'));
       // hashHistory.push(this.props.redirectUrl);
+    }).catch(() => {
+      dispatch(change('password', null));
+      dispatch(untouch('password'));
+      disptach(change('passworConfirmation', null));
+      dispatch(untouch('password'));
     });
   }
 

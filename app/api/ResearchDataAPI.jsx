@@ -59,16 +59,26 @@ export const getProjects = () => {
   });
 }
 
-export const createProject = (formData) => {
-  return axios.post('/projects', formData).then((res) => {
+export const createProject = (formData, token) => {
+  const config = {
+    headers: {
+      'x-auth': token
+    }
+  }
+  return axios.post('/projects', formData, config).then((res) => {
     return res.data;
   }).catch((err) => {
     throw new Error(err);
   });
 }
 
-export const updateProject = (projectId, formData) => {
-  return axios.patch(`/projects/${projectId}`, formData).then((res) => {
+export const updateProject = (projectId, formData, token) => {
+  const config = {
+    headers: {
+      'x-auth': token
+    }
+  }
+  return axios.patch(`/projects/${projectId}`, formData, config).then((res) => {
     //console.log('axios updateProject:', res.data);
     return res.data;
   }).catch((err) => {
@@ -76,24 +86,37 @@ export const updateProject = (projectId, formData) => {
   });
 }
 
-export const deleteProject = (projectId) => {
-  return axios.delete(`/projects/${projectId}`).then((res) => {
-    return res.data;
-  }).catch((err) => {
-    throw new Error(err);
-  });
-}
-
-export const deleteFile = (projectId, fileId) => {
-  return axios.delete(`/projects/${projectId}/files/${fileId}`).then((res) => {
-    return res.data;
-  }).catch((err) => {
-    throw new Error(err);
-  });
-}
-
-export const uploadFile = (projectId, formData, filename, dispatch) => {
+export const deleteProject = (projectId, token) => {
   const config = {
+    headers: {
+      'x-auth': token
+    }
+  }
+  return axios.delete(`/projects/${projectId}`, config).then((res) => {
+    return res.data;
+  }).catch((err) => {
+    throw new Error(err);
+  });
+}
+
+export const deleteFile = (projectId, fileId, token) => {
+  const config = {
+    headers: {
+      'x-auth': token
+    }
+  }
+  return axios.delete(`/projects/${projectId}/files/${fileId}`, config).then((res) => {
+    return res.data;
+  }).catch((err) => {
+    throw new Error(err);
+  });
+}
+
+export const uploadFile = (projectId, formData, filename, dispatch, token) => {
+  const config = {
+    headers: {
+      'x-auth': token
+    },
     onUploadProgress: function (e) {
         const progress = (100.0 * e.loaded)/e.total;
         dispatch(actions.updateFileUploadProgress(filename, progress));

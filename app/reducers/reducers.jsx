@@ -52,7 +52,12 @@ export var createProjectFormReducer = (state = initState, action) => {
         logoImage
       }
     case 'CLEAR_CREATE_PROJECT_FORM':
-      return initState
+      return initState;
+    case 'DELETE_LOGO_IMAGE_FROM_CREATE_PROJECT_FORM':
+      return {
+        ...state,
+        logoImage: null
+      }
     default:
       return state;
   }

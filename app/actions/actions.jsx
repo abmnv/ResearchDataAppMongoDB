@@ -106,6 +106,7 @@ export const startEmailPasswordLogin = (email, password) => {
     }).catch((err) => {
       console.log('startEmailPasswordLogin error:', err);
       dispatch(authError(err));
+      return Promise.reject();
     });
 
     // return firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password).then((user) => {
@@ -127,16 +128,16 @@ export var login = () => {
   }
 }
 
-export var startGithubLogin = () => {
-  return (dispatch, getState) => {
-    return firebase.auth().signInWithPopup(githubProvider).then((result) => {
-      console.log('Auth worked', result);
-      dispatch(authUser());
-    }).catch((e) => {
-      console.log('Unable to auth', e);
-    });
-  }
-}
+// export var startGithubLogin = () => {
+//   return (dispatch, getState) => {
+//     return firebase.auth().signInWithPopup(githubProvider).then((result) => {
+//       console.log('Auth worked', result);
+//       dispatch(authUser());
+//     }).catch((e) => {
+//       console.log('Unable to auth', e);
+//     });
+//   }
+// }
 
 export var logout = () => {
   return {
@@ -179,8 +180,9 @@ export const setRedirectUrl = (url) => {
 
 export var startDeleteProject = (projectId) => {
   return (dispatch, getState) => {
+    const {auth: {token}} = getState();
 
-    return dbAPI.deleteProject(projectId).then((project) => {
+    return dbAPI.deleteProject(projectId, token).then((project) => {
       dispatch(deleteProject(projectId));
     })
   }
@@ -279,7 +281,8 @@ export var deleteFile = (projectId, fileId) => {
 
 export var startDeleteFile = (projectId, fileId) => {
   return (dispatch, getState) => {
-    return dbAPI.deleteFile(projectId, fileId).then(() => {
+    const {auth: {token}} = getState();
+    return dbAPI.deleteFile(projectId, fileId, token).then(() => {
       dispatch(deleteFile(projectId, fileId));
     });
   }
@@ -297,13 +300,13 @@ export var startDeleteFile = (projectId, fileId) => {
 //   }
 // }
 
-export var startUpdateFileSelection = (projedtId, fileId, isSelected) => {
-  return (dispatch, getState) => {
-    return firebaseRef.child('projects/' + projectId + '/files/' + fileId).update({isSelected}).then((snapshot) => {
-
-    })
-  }
-}
+// export var startUpdateFileSelection = (projedtId, fileId, isSelected) => {
+//   return (dispatch, getState) => {
+//     return firebaseRef.child('projects/' + projectId + '/files/' + fileId).update({isSelected}).then((snapshot) => {
+//
+//     })
+//   }
+// }
 
 export const setCreateProjectFileUploadList = (fileList) => {
   return {
@@ -360,7 +363,8 @@ export var startUpdateProject = (id, title, description, fileList) => {
     formData.append('title', title);
     formData.append('description', description);
 
-    return dbAPI.updateProject(id, formData).then(() => {
+    const {auth: {token}} = getState();
+    return dbAPI.updateProject(id, formData, token).then(() => {
       dispatch(updateProject({id, title, description}));
 
       let seq = Promise.resolve();
@@ -371,7 +375,7 @@ export var startUpdateProject = (id, title, description, fileList) => {
           fd.append('dataFiles', myfile.file);
           console.log('my file:', myfile);
           //Note that myfile object contains file object and progress property
-          return dbAPI.uploadFile(id, fd, myfile.file.name, dispatch);
+          return dbAPI.uploadFile(id, fd, myfile.file.name, dispatch, token);
         }).then((doc) => {
           dispatch(updateProject({id, files: [doc]}));
           dispatch(deleteFileFromUploadList(myfile.file.name));
@@ -454,30 +458,33 @@ export var startUpdateProject = (id, title, description, fileList) => {
 //   }
 // }
 
-/* fileList contains DOM file object and progress property*/
+export var deleteLogoImageFromCreateProjectForm = () => {
+  return {
+    type: 'DELETE_LOGO_IMAGE_FROM_CREATE_PROJECT_FORM'
+  }
+}
+
+//Note that fileList elements contain DOM file object and progress property
 export var startCreateProject = (title, description, logoImage, fileList) => {
   return (dispatch, getState) => {
+    const {auth: {token}} = getState();
+
     const formData = new FormData();
-
-    // const newFileList = fileList.map((myFile) => {
-    //   return myFile.file;
-    // });
-
-    //console.log('actions newFileList:', newFileList);
 
     formData.append('title', title);
     formData.append('description', description);
 
     if(logoImage){
-      formData.append('logoImage', logoImage);
+      formData.append('logoImage', logoImage.file);
     }
 
-    fileList.forEach((myfile) => {
-      formData.append('dataFiles', myfile.file);
-    });
-
-    return dbAPI.createProject(formData).then((project) => {
+    return dbAPI.createProject(formData, token).then((project) => {
       dispatch(addProject(project));
+      dispatch(deleteLogoImageFromCreateProjectForm());
+
+      // fileList.forEach((myfile) => {
+      //   formData.append('dataFiles', myfile.file);
+      // });
     });
   }
 }

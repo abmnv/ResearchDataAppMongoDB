@@ -30,34 +30,39 @@ export var fileUploadListReducer = (state = [], action) => {
   }
 }
 
-const initState = {
-  title: null,
-  description: null,
-  fileList: [],
-  logoImage: null
-}
+// const initState = {
+//   title: null,
+//   description: null,
+//   fileList: [],
+//   logoImage: null
+// }
 
-export var createProjectFormReducer = (state = initState, action) => {
+export var createProjectReducer = (state = {buttonStatus: 'disabled'}, action) => {
   switch(action.type){
-    case 'SET_CREATE_PROJECT_FILE_UPLOAD_LIST':
-      const {fileList} = action;
+    case 'CHANGE_CREATE_PROJECT_BUTTON_STATUS':
+      const {buttonStatus} = action;
       return {
-        ...state,
-        fileList
+        buttonStatus
       }
-    case 'SET_CREATE_PROJECT_LOGO_IMAGE':
-      const {logoImage} = action;
-      return {
-        ...state,
-        logoImage
-      }
-    case 'CLEAR_CREATE_PROJECT_FORM':
-      return initState;
-    case 'DELETE_LOGO_IMAGE_FROM_CREATE_PROJECT_FORM':
-      return {
-        ...state,
-        logoImage: null
-      }
+    // case 'SET_CREATE_PROJECT_FILE_UPLOAD_LIST':
+    //   const {fileList} = action;
+    //   return {
+    //     ...state,
+    //     fileList
+    //   }
+    // case 'SET_CREATE_PROJECT_LOGO_IMAGE':
+    //   const {logoImage} = action;
+    //   return {
+    //     ...state,
+    //     logoImage
+    //   }
+    // case 'CLEAR_CREATE_PROJECT_FORM':
+    //   return initState;
+    // case 'DELETE_LOGO_IMAGE_FROM_CREATE_PROJECT_FORM':
+    //   return {
+    //     ...state,
+    //     logoImage: null
+    //   }
     default:
       return state;
   }

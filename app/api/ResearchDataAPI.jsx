@@ -59,12 +59,19 @@ export const getProjects = () => {
   });
 }
 
-export const createProject = (formData, token) => {
+export const createProject = (formData, token, uploadProgress) => {
   const config = {
     headers: {
       'x-auth': token
-    }
+    },
+    onUploadProgress: uploadProgress
+    // function (e) {
+    //     const progress = (100.0 * e.loaded)/e.total;
+    //     change(`logoImage.progress`, progress);
+    //     //dispatch(actions.updateFileUploadProgress(filename, progress));
+    // }
   }
+
   return axios.post('/projects', formData, config).then((res) => {
     return res.data;
   }).catch((err) => {
@@ -112,15 +119,17 @@ export const deleteFile = (projectId, fileId, token) => {
   });
 }
 
-export const uploadFile = (projectId, formData, filename, dispatch, token) => {
+export const uploadFile = (projectId, formData, token, uploadProgress) => {
   const config = {
     headers: {
       'x-auth': token
     },
-    onUploadProgress: function (e) {
-        const progress = (100.0 * e.loaded)/e.total;
-        dispatch(actions.updateFileUploadProgress(filename, progress));
-    }
+    onUploadProgress: uploadProgress
+    // function (e) {
+    //     const progress = (100.0 * e.loaded)/e.total;
+    //     uploadProgressFunction(progress);
+    //     //dispatch(actions.updateFileUploadProgress(filename, progress));
+    // }
   }
 
   return axios.post(`/projects/${projectId}/files`, formData, config).then((res) => {

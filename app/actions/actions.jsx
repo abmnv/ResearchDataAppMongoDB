@@ -369,13 +369,17 @@ export var startUpdateProject = (id, title, description, fileList) => {
 
       let seq = Promise.resolve();
 
-      fileList.forEach((myfile) => {
+      fileList.forEach((myfile, i) => {
         seq = seq.then(() => {
           const fd = new FormData();
           fd.append('dataFiles', myfile.file);
           console.log('my file:', myfile);
           //Note that myfile object contains file object and progress property
-          return dbAPI.uploadFile(id, fd, myfile.file.name, dispatch, token);
+          const uploadProgress = (e) => {
+              const progress = (100.0 * e.loaded)/e.total;
+              dispatch(updateFileUploadProgress(myfile.file.name, progress));
+          }
+          return dbAPI.uploadFile(id, fd, token, uploadProgress);
         }).then((doc) => {
           dispatch(updateProject({id, files: [doc]}));
           dispatch(deleteFileFromUploadList(myfile.file.name));
@@ -458,6 +462,13 @@ export var startUpdateProject = (id, title, description, fileList) => {
 //   }
 // }
 
+export var changeCreateProjectButtonStatus = (buttonStatus) => {
+  return {
+    type: 'CHANGE_CREATE_PROJECT_BUTTON_STATUS',
+    buttonStatus
+  }
+}
+
 export var deleteLogoImageFromCreateProjectForm = () => {
   return {
     type: 'DELETE_LOGO_IMAGE_FROM_CREATE_PROJECT_FORM'
@@ -465,22 +476,57 @@ export var deleteLogoImageFromCreateProjectForm = () => {
 }
 
 //Note that fileList elements contain DOM file object and progress property
-export var startCreateProject = (title, description, logoImage, fileList) => {
+export var startCreateProject = ({title, description, logoImage=null, fileList=null, change}) => {
+
   return (dispatch, getState) => {
     const {auth: {token}} = getState();
 
     const formData = new FormData();
+    let uploadProgress = null;
 
     formData.append('title', title);
     formData.append('description', description);
 
     if(logoImage){
       formData.append('logoImage', logoImage.file);
+      uploadProgress = (e) => {
+          const progress = (100.0 * e.loaded) / e.total;
+          change(`logoImage.progress`, progress);
+          //dispatch(actions.updateFileUploadProgress(filename, progress));
+      }
     }
 
-    return dbAPI.createProject(formData, token).then((project) => {
+    return dbAPI.createProject(formData, token, uploadProgress).then((project) => {
       dispatch(addProject(project));
-      dispatch(deleteLogoImageFromCreateProjectForm());
+
+      let seq = Promise.resolve();
+
+      if(fileList){
+        fileList.forEach((myfile, i) => {
+          seq = seq.then(() => {
+            const fd = new FormData();
+            fd.append('dataFiles', myfile.file);
+            console.log('my file:', myfile);
+            //Note that myfile object contains file object and progress property
+            const uploadProgress = (e) => {
+                const progress = (100.0 * e.loaded)/e.total;
+                change(`fileList[${i}].progress`, progress);
+                //uploadProgressFunction(progress);
+                //dispatch(actions.updateFileUploadProgress(filename, progress));
+            }
+            return dbAPI.uploadFile(project.id, fd, token, uploadProgress);
+          }).then((doc) => {
+            dispatch(updateProject({id: project.id, files: [doc]}));
+            //dispatch(deleteFileFromUploadList(myfile.file.name));
+            //files.push(doc);
+          });
+        });
+      }
+
+      return seq;
+
+      //change('logoImage', '');
+      //dispatch(deleteLogoImageFromCreateProjectForm());
 
       // fileList.forEach((myfile) => {
       //   formData.append('dataFiles', myfile.file);

@@ -90,7 +90,6 @@ class SignUpModal extends React.Component {
     //console.log('renderField touched, error:', touched, error);
     return (
       <fieldset>
-
         <div>
           <input className="modal-input" {...input} placeholder={label} type={type}/>
           {touched && error && <div className="login-error">{error}</div>}

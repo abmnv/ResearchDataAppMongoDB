@@ -18,7 +18,7 @@ export var configure = () => {
     form: formReducer,
     currentModal: reducers.modalReducer,
     uploadFileList: reducers.fileUploadListReducer,
-    createProject: reducers.createProjectReducer
+    //createProject: reducers.createProjectReducer
     //fileUploadProgress: reducers.fileUploadProgressReducer
   });
 

@@ -357,7 +357,7 @@ export var updateProject = (project) => {
   }
 }
 
-export var startUpdateProject = (id, title, description, fileList) => {
+export var startUpdateProject = ({id, title, description, fileList, uploadFileList=[], change, array}) => {
   return (dispatch, getState) => {
     const formData = new FormData();
     formData.append('title', title);
@@ -369,20 +369,56 @@ export var startUpdateProject = (id, title, description, fileList) => {
 
       let seq = Promise.resolve();
 
+      let numOfDeletedFiles = 0;
       fileList.forEach((myfile, i) => {
+        if(myfile.selected){
+          seq = seq.then(() => {
+            return dbAPI.deleteFile(id, myfile.id, token);
+          }).then(() => {
+            dispatch(deleteFile(id, myfile.id));
+            //Note that since array size is changing, everytime I have to find the current index
+            //console.log('array:', array);
+            console.log('inside promise i:', i, 'numOfDeletedFiles', numOfDeletedFiles);
+            array.remove('fileList', i - numOfDeletedFiles);
+            numOfDeletedFiles++;
+            // for(let i=0; i<array.length; i++){
+            //   if(array[i].id === myfile.id){
+            //     array.remove('fileList', i);
+            //     break;
+            //   }
+            // }
+          });
+        }
+      });
+
+      let numOfUploadedFiles = 0;
+      uploadFileList.forEach((myfile, i) => {
         seq = seq.then(() => {
           const fd = new FormData();
           fd.append('dataFiles', myfile.file);
           console.log('my file:', myfile);
           //Note that myfile object contains file object and progress property
+          //const uploadProgress = null;
           const uploadProgress = (e) => {
-              const progress = (100.0 * e.loaded)/e.total;
-              dispatch(updateFileUploadProgress(myfile.file.name, progress));
+              const progress = (100.0 * e.loaded) / e.total;
+              //Note that I have to use a hack because array size changes and indexes can not be used
+              //Because files are always deleted at the end I assume that the index of the next file is
+              //always 0. If there is an error to delete a file, it may cause a problem
+              change(`uploadFileList[${i - numOfUploadedFiles}].progress`, progress);
+              //uploadProgressFunction(progress);
+              //dispatch(actions.updateFileUploadProgress(filename, progress));
           }
           return dbAPI.uploadFile(id, fd, token, uploadProgress);
         }).then((doc) => {
+          //Note that the updated project is not in Redux store yet
+          //console.log('doc:', doc);
           dispatch(updateProject({id, files: [doc]}));
-          dispatch(deleteFileFromUploadList(myfile.file.name));
+          array.push('fileList', {...doc, selected: false});
+          array.remove('uploadFileList', i - numOfUploadedFiles);
+          numOfUploadedFiles++;
+          //array.shift('uploadFileList');
+          //array.remove('uploadFileList', i);
+          //dispatch(deleteFileFromUploadList(myfile.file.name));
           //files.push(doc);
         });
       });

@@ -37,36 +37,36 @@ export var fileUploadListReducer = (state = [], action) => {
 //   logoImage: null
 // }
 
-export var createProjectReducer = (state = {buttonStatus: 'disabled'}, action) => {
-  switch(action.type){
-    case 'CHANGE_CREATE_PROJECT_BUTTON_STATUS':
-      const {buttonStatus} = action;
-      return {
-        buttonStatus
-      }
-    // case 'SET_CREATE_PROJECT_FILE_UPLOAD_LIST':
-    //   const {fileList} = action;
-    //   return {
-    //     ...state,
-    //     fileList
-    //   }
-    // case 'SET_CREATE_PROJECT_LOGO_IMAGE':
-    //   const {logoImage} = action;
-    //   return {
-    //     ...state,
-    //     logoImage
-    //   }
-    // case 'CLEAR_CREATE_PROJECT_FORM':
-    //   return initState;
-    // case 'DELETE_LOGO_IMAGE_FROM_CREATE_PROJECT_FORM':
-    //   return {
-    //     ...state,
-    //     logoImage: null
-    //   }
-    default:
-      return state;
-  }
-}
+// export var createProjectReducer = (state = {buttonStatus: 'disabled'}, action) => {
+//   switch(action.type){
+//     case 'CHANGE_CREATE_PROJECT_BUTTON_STATUS':
+//       const {buttonStatus} = action;
+//       return {
+//         buttonStatus
+//       }
+//     // case 'SET_CREATE_PROJECT_FILE_UPLOAD_LIST':
+//     //   const {fileList} = action;
+//     //   return {
+//     //     ...state,
+//     //     fileList
+//     //   }
+//     // case 'SET_CREATE_PROJECT_LOGO_IMAGE':
+//     //   const {logoImage} = action;
+//     //   return {
+//     //     ...state,
+//     //     logoImage
+//     //   }
+//     // case 'CLEAR_CREATE_PROJECT_FORM':
+//     //   return initState;
+//     // case 'DELETE_LOGO_IMAGE_FROM_CREATE_PROJECT_FORM':
+//     //   return {
+//     //     ...state,
+//     //     logoImage: null
+//     //   }
+//     default:
+//       return state;
+//   }
+// }
 
 export var projectReducer = (state = [], action) => {
   switch(action.type){
